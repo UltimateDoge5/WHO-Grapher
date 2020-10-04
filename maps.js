@@ -7,7 +7,7 @@ let marker;
 function initMap() {
     map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: 20, lng: 10 },
-        zoom: 2.7,
+        zoom: 2.9,
         mapTypeControl: false,
         draggable: false,
         scaleControl: false,
@@ -28,6 +28,11 @@ function initMap() {
             .then(response => {
                 console.log(response)
                 isFetch = false;
+                if (response.status != "OK") {
+                    console.log("Clicked country was not recognized");
+                    return false;
+                }
+
                 let country;
                 if (response.plus_code.compound_code == undefined) { //If first possible path is not correct
                     if (response.results[response.results.length - 1].formatted_address == undefined) { //If second possible path is not correct
@@ -40,24 +45,35 @@ function initMap() {
                     country = response.plus_code.compound_code.split(", ");
                     country = country[country.length - 1];
                 }
+                if (country.includes("Ocean")) {
+                    console.log("Please select a valid country");
+                    return false;
+                }
                 console.log(country)
                 document.querySelector('#selected-country').innerHTML = country
                 geocoder.geocode({ 'address': country }, function(results, status) {
                     if (status == google.maps.GeocoderStatus.OK) {
                         map.setCenter(results[0].geometry.location);
-                        map.setZoom(5);
                         iso_code = country_to_iso(country);
                         console.log(iso_code)
+                        console.log(results)
+                        if (country == "Russia") {
+                            map.setZoom(4)
+                        } else {
+                            map.setZoom(5);
+                        }
                     }
                 });
             });
     });
 }
 
-function reset() {
-    map.setZoom(2.7);
+function resetView() {
+    map.setZoom(2.9);
     map.setCenter({ lat: 20, lng: 10 })
-    marker.setMap(null)
+    if (marker != undefined) {
+        marker.setMap(null)
+    }
 }
 
 async function getData(url = '') {
