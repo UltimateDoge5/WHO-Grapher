@@ -6,9 +6,14 @@ let marker;
 
 function initMap() {
     map = new google.maps.Map(document.getElementById("map"), {
-        center: { lat: 0, lng: 10 },
-        zoom: 2.9,
-        //zoomControl: false
+        center: { lat: 20, lng: 10 },
+        zoom: 2.7,
+        mapTypeControl: false,
+        draggable: false,
+        scaleControl: false,
+        scrollwheel: false,
+        navigationControl: false,
+        streetViewControl: false,
     });
     geocoder = new google.maps.Geocoder();
     map.addListener("click", (clickInput) => {
@@ -36,10 +41,13 @@ function initMap() {
                     country = country[country.length - 1];
                 }
                 console.log(country)
+                document.querySelector('#selected-country').innerHTML = country
                 geocoder.geocode({ 'address': country }, function(results, status) {
                     if (status == google.maps.GeocoderStatus.OK) {
                         map.setCenter(results[0].geometry.location);
                         map.setZoom(5);
+                        iso_code = country_to_iso(country);
+                        console.log(iso_code)
                     }
                 });
             });
@@ -47,8 +55,8 @@ function initMap() {
 }
 
 function reset() {
-    map.setZoom(2.9);
-    map.setCenter({ lat: 0, lng: 10 })
+    map.setZoom(2.7);
+    map.setCenter({ lat: 20, lng: 10 })
     marker.setMap(null)
 }
 

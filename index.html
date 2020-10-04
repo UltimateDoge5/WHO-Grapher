@@ -3,16 +3,40 @@
 
     <head>
         <meta charset="UTF-8">
-        <title>Simple Map</title>
+        <title>HACK HEORES APP</title>
         <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDMlOAWV0hPByaFcpfarjqMs6-iZImWp9A&callback=initMap&libraries=&v=weekly" defer></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDMlOAWV0hPByaFcpfarjqMs6-iZImWp9A&callback=initMap&libraries=&v=weekly&language=en&region=US" defer></script>
         <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
         <!-- jsFiddle will insert css and js -->
     </head>
 
     <body>
+
+        <nav>
+            <div>Selected Country: <b id='selected-country'>None</b></div>
+            <div id='reset'>
+                <i class="fas fa-undo"></i>
+                RESET
+            </div>
+        </nav>
+
+        <div id="sidebar" class="side-active"> 
+
+            <div id='categories'></div>
+
+
+            <button>
+                <span id="open-arrow">&rsaquo;</span>
+            </button>
+        </div>
+
         <div id="map"></div>
     </body>
-    <script src="./maps.js"></script>
 
+
+    <script src="./maps.js"></script>
+    <script src="./countries.js"></script>
+    <script src="./gui.js"></script>
 </html>
