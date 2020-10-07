@@ -4,13 +4,18 @@
     <head>
         <meta charset="UTF-8">
         <title>HACK HEORES APP</title>
+        <!-- POLYFILL -->
         <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+        <!-- GOOGLE MAPS -->
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDMlOAWV0hPByaFcpfarjqMs6-iZImWp9A&callback=initMap&libraries=&v=weekly&language=en&region=US" defer></script>
+        <!--CSS FILE-->
         <link rel="stylesheet" href="./public/style/style.css">
+        <!--FONT AWESOME-->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+        <!--GOOGLE FONTS-->
         <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css" integrity="sha512-/zs32ZEJh+/EO2N1b0PEdoA10JkdC3zJ8L5FTiQu82LR9S/rOQNfQN7U59U9BC12swNeRAz3HSzIL2vpp4fv3w==" crossorigin="anonymous" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha512-s+xg36jbIujB2S2VKfpGmlC3T5V2TF3lY48DX7u2r9XzGzgPsa6wTpOQA7J9iffvdeBN0q9tKzRxVxw1JviZPg==" crossorigin="anonymous"></script>
+        <!--BOOTSTRAP CSS-->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     </head>
 
     <body>
@@ -22,9 +27,19 @@
             </div>
         </nav>
 
-        <div id="sidebar" class="side-hide">
+        <div id="sidebar" class="side-active">
 
-            <div id='categories'></div>
+            <div id='categories'>
+                <h2 class='categories-title'>Categories</h2>
+                <select id="category" disabled>
+                </select>
+
+                <select id="subcategory" disabled>
+                </select>
+
+                <button id='search'>search</button>
+
+            </div>
 
             <button>
                 <span id="open-arrow">&rsaquo;</span>
@@ -32,10 +47,20 @@
         </div>
 
         <div id="map"></div>
+
+        <div id="alerts">
+           
+        </div>
+
     </body>
 
+    <!-- SCRIPTS -->
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
     <script src="./public/javascript/countries.js"></script>
     <script src="./public/javascript/map.js"></script>
     <script src="./public/javascript/gui.js"></script>
-
+    <script src="./public/javascript/api.js"></script>
 </html>

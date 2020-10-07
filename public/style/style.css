@@ -1,10 +1,19 @@
+@keyframes SlideUp {
+    from{
+        top: 100%;
+    }
+    to{
+        top: 90%;
+    }
+}
+
 html,
 body {
     height: 100%;
     margin: 0;
     padding: 0;
     font-family: 'Lato', sans-serif;
-    color: #303030;
+    background-color: aquamarine;
 }
 
 #map {
@@ -18,14 +27,14 @@ nav {
     font-size: 16pt;
     margin: 10px auto;
     background-color: rgba(255, 255, 255, 0.9);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    position: fixed;
+    position: absolute;
     top: 10px;
     left: 30%;
     z-index: 1;
     border-radius: 20px;
+    display: flex !important;
+    justify-content: space-around;
+    align-items: center;
 }
 
 #reset {
@@ -43,7 +52,7 @@ nav {
     z-index: 1;
 }
 
-.side-hide {
+.side-hidden {
     transform: translateX(-80%);
 }
 
@@ -56,17 +65,21 @@ nav {
     height: 100%;
     box-shadow: 1px 1px 5px 2px rgb(66, 117, 244);
     background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #sidebar button {
     outline: none;
     background: transparent;
     border: none;
+    display: flex;
+    align-items: center;
 }
 
 #open-arrow {
-    width: 20%;
-    height: 100%;
+    height: 50%;
     border: none;
     cursor: pointer;
     background-color: transparent;
@@ -78,4 +91,45 @@ nav {
 
 #reset {
     cursor: pointer;
+    font-weight: 700;
+}
+
+.alert{
+    position: fixed !important;
+    top: 90%;
+    z-index: 1;
+    animation: SlideUp .5s cubic-bezier(.46,.08,.39,.99);
+}
+
+.categories-title{
+    letter-spacing: 1px;
+    font-weight: 700;
+    text-shadow: 1px 1px 7px rgb(66, 117, 244);
+    color: white;
+    margin-top: 20px;
+    text-transform: uppercase;
+}
+
+select{
+    width: 80%;
+    height: 40px;
+    font-weight: 700;
+    font-size: 13pt !important;
+    border: 2px groove rgb(66, 117, 244);
+    outline: none;
+    border-radius: 10px;
+    margin: 20px 0px !important;
+    padding: 0px 10px;
+}
+
+#search{
+    width: 50%;
+    height: 40px;
+    font-weight: 700;
+    font-size: 16pt;
+    margin: 20px 0px;
+    text-transform: uppercase;
+    justify-content: center;
+    color: rgb(66, 117, 244);
+    position: relative;
 }
