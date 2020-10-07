@@ -37,7 +37,7 @@ app.get("/api/:codes", (req, res) => { //Connecting to api from the server becau
         });
         // The whole response has been received. Print out the result.
         resp.on('end', () => {
-            res.json(data);
+            res.json(JSON.parse(data));
         });
     }).on("error", (err) => {
         throw ("Error: " + err.message);
