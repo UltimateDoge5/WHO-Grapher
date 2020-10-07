@@ -12,4 +12,4 @@ const toggleSidebar = () => {
 
 document.querySelector('#open-arrow').addEventListener('click', toggleSidebar);
 
-document.querySelector('#reset').addEventListener('click', resetView)
+document.querySelector('#reset').addEventListener('click', resetView);
