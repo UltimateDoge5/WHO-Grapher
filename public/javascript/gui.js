@@ -1,46 +1,3 @@
-const queries = {
-    suicide: {
-        name: "Suicide",
-        subcategories: [{
-                name: "Suicide rate (per 100,000 population)",
-                code: "SDGSUICIDE"
-            },
-            {
-                name: "Age-standardized suicide rates (per 100 000 population)",
-                code: "MH_12"
-            }
-        ]
-    },
-    obesity: {
-        name: "Obesity",
-        subcategories: [{
-                name: "Prevalence of obesity",
-                code: "EQ_BMI30"
-            },
-            {
-                displayName: "Prevalence of obesity among adults",
-                name: "Prevalence of obesity among adults, BMI > 30 (age-standardized estimate) (%)",
-                code: "NCD_BMI_30A"
-            },
-            {
-                displayName: "Prevalence of obesity among children and adolescents",
-                name: "Prevalence of obesity among children and adolescents, BMI > +2 standard deviations above the median (crude estimate) (%)",
-                code: "NCD_BMI_PLUS2C"
-            }
-        ]
-    },
-    airPollution: {
-        name: "Air pollution",
-        subcategories: [{
-            name: "Ambient air pollution attributable deaths",
-            code: "AIR_1"
-        },{
-            name:"Household air pollution attributable deaths",
-            code:"AIR_11"
-        }]
-    }
-}
-
 let category = 'suicide';
 let subcategory = 'Suicide rate (per 100,000 population)';
 
@@ -69,41 +26,39 @@ const alert_html = alert => {
     </div>
 `
 }
-    
-    const show_alert = alert =>  {
-        document.querySelector('#alerts').innerHTML = alert_html(alert);
+
+const show_alert = alert => {
+    document.querySelector('#alerts').innerHTML = alert_html(alert);
+}
+
+let category_select = document.querySelector('#category');
+
+const prepare_categories_options = () => {
+    for (let category in queries) {
+        const category_value = category;
+        const category_name = queries[category].name;
+        category_select.innerHTML += `<option value="${category_value}">${category_name}</option>`;
     }
-    
-    let category_select = document.querySelector('#category');
-    
-    const prepare_categories_options = () => {    
-        for(let category in queries){
-            const category_value = category;
-            const category_name = queries[category].name;
-            category_select.innerHTML += `<option value="${category_value}">${category_name}</option>`;
+    prepare_subcategories_options()
+}
+
+prepare_categories_options()
+
+function prepare_subcategories_options() {
+    let subcategory_select = document.querySelector('#subcategory');
+    subcategory_select.innerHTML = "";
+    let subcategories;
+    category = this.value || 'suicide';
+    choose_subcategory()
+
+    subcategories = queries[category]['subcategories'];
+
+    for (let subcategory of subcategories) {
+        if (subcategory.displayName) {
+            subcategory_select.innerHTML += `<option value="${subcategory.name}">${subcategory.displayName}</option>`;
+        } else {
+            subcategory_select.innerHTML += `<option value="${subcategory.name}">${subcategory.name}</option>`;
         }
-        prepare_subcategories_options()
-    }
-    
-    prepare_categories_options()
-    
-    function prepare_subcategories_options(){
-        let subcategory_select = document.querySelector('#subcategory');
-        subcategory_select.innerHTML = "";
-        let subcategories;
-        category = this.value || 'suicide';
-        choose_subcategory()
-        
-        
-        subcategories = queries[category]['subcategories'];
-        
-        for(let subcategory of subcategories){
-            if(subcategory.displayName){
-                subcategory_select.innerHTML += `<option value="${subcategory.name}">${subcategory.displayName}</option>`;
-            }
-            else{
-                subcategory_select.innerHTML += `<option value="${subcategory.name}">${subcategory.name}</option>`;
-            }
     }
 }
 
@@ -112,25 +67,25 @@ function choose_subcategory() {
 }
 
 const search_code = (category, subcategory) => {
-    for(let sub of queries[category]['subcategories']){
-        if(sub.name === subcategory){
+    for (let sub of queries[category]['subcategories']) {
+        if (sub.name === subcategory) {
             console.log(sub.code)
             return sub.code
         }
     }
 }
-        
+
 category_select.addEventListener('change', prepare_subcategories_options);
 document.querySelector('#subcategory').addEventListener('change', choose_subcategory)
-        
+
 document.querySelector('#search').addEventListener('click', () => {
     const active_sub_code = search_code(category, subcategory);
-    const data_to_url =  {
+    const data_to_url = {
         'iso': iso_code,
         'code': active_sub_code
     }
     console.log(data_to_url)
     get_data(data_to_url.code, data_to_url.iso)
-    .then(response => console.log(response))
-    .catch(err => console.log(err))
+        .then(response => console.log(response))
+        .catch(err => console.log(err))
 })

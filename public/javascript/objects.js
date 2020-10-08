@@ -177,7 +177,7 @@ const countries = {
     "Portugal": "PRT",
     "Puerto Rico": "PRI",
     "Qatar": "QAT",
-    "Romania":"ROU",
+    "Romania": "ROU",
     "Russia": "RUS",
     "Rwanda": "RWA",
     "Samoa": "WSM",
@@ -235,6 +235,48 @@ const countries = {
     "Zambia": "ZMB",
     "Zimbabwe": "ZWE"
 
+}
+const categories = {
+    suicide: {
+        name: "Suicide",
+        subcategories: [{
+                name: "Suicide rate (per 100,000 population)",
+                code: "SDGSUICIDE"
+            },
+            {
+                name: "Age-standardized suicide rates (per 100 000 population)",
+                code: "MH_12"
+            }
+        ]
+    },
+    obesity: {
+        name: "Obesity",
+        subcategories: [{
+                name: "Prevalence of obesity",
+                code: "EQ_BMI30"
+            },
+            {
+                displayName: "Prevalence of obesity among adults",
+                name: "Prevalence of obesity among adults, BMI > 30 (age-standardized estimate) (%)",
+                code: "NCD_BMI_30A"
+            },
+            {
+                displayName: "Prevalence of obesity among children and adolescents",
+                name: "Prevalence of obesity among children and adolescents, BMI > +2 standard deviations above the median (crude estimate) (%)",
+                code: "NCD_BMI_PLUS2C"
+            }
+        ]
+    },
+    airPollution: {
+        name: "Air pollution",
+        subcategories: [{
+            name: "Ambient air pollution attributable deaths",
+            code: "AIR_1"
+        }, {
+            name: "Household air pollution attributable deaths",
+            code: "AIR_11"
+        }]
+    }
 }
 
 const country_to_iso = country => {
