@@ -4,6 +4,7 @@ let map;
 let isFetch = false;
 let marker;
 let iso_code;
+let country;
 
 function initMap() {
     map = new google.maps.Map(document.getElementById("map"), {
@@ -34,7 +35,6 @@ function initMap() {
                     return false;
                 }
 
-                let country;
                 if (response.plus_code.compound_code == undefined) { //If first possible path is not correct
                     if (response.results[response.results.length - 1].formatted_address == undefined) { //If second possible path is not correct
                         console.log("Clicked country was not recognized");

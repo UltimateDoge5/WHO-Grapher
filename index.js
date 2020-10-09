@@ -56,6 +56,7 @@ function isJson(json) { //Check if server response is valid JSON
     }
     return true;
 }
+
 app.use('/public', express.static(path.join(__dirname, 'public'))); //Provide acces to nessesary files
 
 app.use(function(req, res, next) { //Handle 404 error

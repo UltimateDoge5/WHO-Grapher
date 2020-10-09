@@ -34,9 +34,9 @@ const show_alert = alert => {
 let category_select = document.querySelector('#category');
 
 const prepare_categories_options = () => {
-    for (let category in queries) {
+    for (let category in categories) {
         const category_value = category;
-        const category_name = queries[category].name;
+        const category_name = categories[category].name;
         category_select.innerHTML += `<option value="${category_value}">${category_name}</option>`;
     }
     prepare_subcategories_options()
@@ -51,7 +51,7 @@ function prepare_subcategories_options() {
     category = this.value || 'suicide';
     choose_subcategory()
 
-    subcategories = queries[category]['subcategories'];
+    subcategories = categories[category]['subcategories'];
 
     for (let subcategory of subcategories) {
         if (subcategory.displayName) {
@@ -63,11 +63,11 @@ function prepare_subcategories_options() {
 }
 
 function choose_subcategory() {
-    subcategory = this.value || queries[category]['subcategories'][0]['name']
+    subcategory = this.value || categories[category]['subcategories'][0]['name']
 }
 
 const search_code = (category, subcategory) => {
-    for (let sub of queries[category]['subcategories']) {
+    for (let sub of categories[category]['subcategories']) {
         if (sub.name === subcategory) {
             console.log(sub.code)
             return sub.code
@@ -85,7 +85,10 @@ document.querySelector('#search').addEventListener('click', () => {
         'code': active_sub_code
     }
     console.log(data_to_url)
-    get_data(data_to_url.code, data_to_url.iso)
-        .then(response => console.log(response))
+    getData(`/api/${data_to_url.code}?country=${data_to_url.iso}`)
+        .then(response => {
+            isFetch = false;
+            renderChart(response, country);
+        })
         .catch(err => console.log(err))
 })
