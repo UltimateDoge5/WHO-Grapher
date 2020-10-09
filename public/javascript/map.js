@@ -3,6 +3,7 @@ let geocoder;
 let map;
 let isFetch = false;
 let marker;
+let iso_code;
 
 function initMap() {
     map = new google.maps.Map(document.getElementById("map"), {
@@ -50,13 +51,13 @@ function initMap() {
                     return false;
                 }
                 console.log(country)
-                document.querySelector('#selected-country').innerHTML = country
+                document.querySelector('#selected-country').innerHTML = country;
+                document.querySelector('#category').disabled = false;
+                document.querySelector('#subcategory').disabled = false;
                 geocoder.geocode({ 'address': country }, function(results, status) {
                     if (status == google.maps.GeocoderStatus.OK) {
                         map.setCenter(results[0].geometry.location);
                         iso_code = country_to_iso(country);
-                        console.log(iso_code)
-                        console.log(results)
                         if (country == "Russia") {
                             map.setZoom(4)
                         } else {
