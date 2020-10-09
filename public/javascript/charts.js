@@ -2,6 +2,14 @@ let canvas = document.querySelector("canvas").getContext("2d");
 let chart;
 
 function createChart(data = null, type = "bar", years, title = "", country) {
+    let sum = 0;
+    for (index of data) {
+        sum += index;
+    }
+    if (sum == 0) {
+        //Alert info when implemented
+        console.log("Data is equal to zero and is not able to be displayed on graph")
+    }
     chart = new Chart(canvas, {
         type: type,
         data: {
@@ -47,12 +55,30 @@ function createChart(data = null, type = "bar", years, title = "", country) {
 function getDataset(data) {
     let dataset = {};
     for (object of data.fact) {
-        if (object.dim.SEX == undefined || object.dim.SEX == "Both sexes" && dataset[object.dim.YEAR] == undefined) {
+        if (object.dim.SEX == undefined || object.dim.SEX == "Both sexes" && dataset[object.dim.YEAR] == undefined) { //If object is valid for chart
             if (isNaN(parseFloat(object.Value))) {
-                let slice = object.Value.split("[");
-                dataset[object.dim.YEAR] = parseFloat(slice[0]);
+                if (object.dim.ENVCAUSE != undefined) {
+                    //If value is provided with margin of error, cut in half to get the value
+                    if (object.dim.ENVCAUSE == "Total") {
+                        //If subcatogory is devided by extra causes, only add to chart total amount of deaths
+                        let slice = object.Value.split("[");
+                        console.log(slice)
+                        dataset[object.dim.YEAR] = parseFloat(slice[0]);
+                    }
+                } else {
+                    let slice = object.Value.split("[");
+                    console.log(slice)
+                    dataset[object.dim.YEAR] = parseFloat(slice[0]);
+                }
             } else {
-                dataset[object.dim.YEAR] = parseFloat(object.Value);
+                if (object.dim.ENVCAUSE != undefined) {
+                    //If subcatogory is devided by extra causes, only add to chart total amount of deaths
+                    if (object.dim.ENVCAUSE == "Total") {
+                        dataset[object.dim.YEAR] = parseFloat(object.Value);
+                    }
+                } else {
+                    dataset[object.dim.YEAR] = parseFloat(object.Value);
+                }
             }
         }
     }
@@ -80,6 +106,12 @@ function renderChart(data, country) {
         console.log("Data was not fetched succesfully");
         return false;
     }
+    if (data.fact.length == 0) {
+        //Alert error when implemented
+        console.log("No data avaiable for this country");
+        return false;
+    }
+
     if (chart == undefined) {
         const years = getYears(data)
         const dataset = getDataset(data, years);
