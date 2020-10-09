@@ -38,7 +38,7 @@ app.get("/api/:codes", (req, res) => { //Connecting to api from the server becau
         // The whole response has been received. Parse the result
         resp.on('end', () => {
             if (!isJson(data)) {
-                res.json({ error: "Wrong request" })
+                res.json({ error: "Wrong request" });
                 return false;
             }
             res.json(JSON.parse(data));

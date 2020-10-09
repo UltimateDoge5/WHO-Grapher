@@ -31,12 +31,14 @@ function initMap() {
                 console.log(response)
                 isFetch = false;
                 if (response.status != "OK") {
+                    //Alert error when implemented
                     console.log("Clicked country was not recognized");
                     return false;
                 }
 
                 if (response.plus_code.compound_code == undefined) { //If first possible path is not correct
                     if (response.results[response.results.length - 1].formatted_address == undefined) { //If second possible path is not correct
+                        //Alert error when implemented
                         console.log("Clicked country was not recognized");
                         return false;
                     } else {
@@ -47,6 +49,7 @@ function initMap() {
                     country = country[country.length - 1];
                 }
                 if (country.includes("Ocean")) {
+                    //Alert error when implemented
                     console.log("Please select a valid country");
                     return false;
                 }
