@@ -1,3 +1,5 @@
+/* ANIMATIONS */
+
 @keyframes SlideUp {
     from{
         top: 100%;
@@ -6,6 +8,8 @@
         top: 90%;
     }
 }
+
+/* BODY */
 
 html,
 body {
@@ -16,10 +20,22 @@ body {
     background-color: aquamarine;
 }
 
+/* ALL BUTTON  */
+
+button{
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+}
+
+/* GOOGLE MAP */
+
 #map {
     height: 100%;
     cursor: pointer;
 }
+
+/* NAV */
 
 nav {
     width: 40%;
@@ -39,7 +55,31 @@ nav {
 
 #reset {
     color: rgb(66, 117, 244);
+    cursor: pointer;
+    font-weight: 700;
 }
+
+.mode{
+    width: 15%;
+    height: 50px;
+    font-size: 16pt;
+    margin: 10px auto;
+    background-color: rgba(255, 255, 255, 0.9);
+    position: absolute;
+    top: 10px;
+    left: 80%;
+    z-index: 1;
+    border-radius: 20px;
+    display: flex !important;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#single, #multi, #global {
+    color: rgb(66, 117, 244);
+}
+
+/* SIDEBAR */
 
 #sidebar {
     width: 30%;
@@ -89,18 +129,6 @@ nav {
     outline: none;
 }
 
-#reset {
-    cursor: pointer;
-    font-weight: 700;
-}
-
-.alert{
-    position: fixed !important;
-    top: 90%;
-    z-index: 1;
-    animation: SlideUp .5s cubic-bezier(.46,.08,.39,.99);
-}
-
 .categories-title{
     letter-spacing: 1px;
     font-weight: 700;
@@ -131,5 +159,36 @@ select{
     text-transform: uppercase;
     justify-content: center;
     color: rgb(66, 117, 244);
-    position: relative;
+    border: 2px solid  rgb(66, 117, 244) !important;
+    border-radius: 15px;
+}
+
+/* ALERT */
+
+.alert{
+    position: fixed !important;
+    top: 90%;
+    z-index: 10000;
+    animation: SlideUp .5s cubic-bezier(.46,.08,.39,.99);
+}
+
+/* CHART */
+
+#chart{
+    height: 100% !important;
+}
+
+/* MODAL  */
+
+.modal-dialog{
+    max-width: 1300px !important;
+}
+
+.modal-content{
+    min-height: 650px;
+    
+}
+
+.modal-body{
+    display: flex;
 }

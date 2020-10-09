@@ -8,7 +8,7 @@ function createChart(data = null, type = "bar", years, title = "", country) {
     }
     if (sum == 0) {
         //Alert info when implemented
-        console.log("Data is equal to zero and is not able to be displayed on graph")
+        show_alert("Data is equal to zero and is not able to be displayed on graph", 'info')
     }
     chart = new Chart(canvas, {
         type: type,
@@ -103,12 +103,12 @@ function getYears(data) {
 function renderChart(data, country) {
     if (data.error != undefined) {
         //Alert error when implemented
-        console.log("Data was not fetched succesfully");
+        show_alert("Data was not fetched succesfully", 'warning');
         return false;
     }
     if (data.fact.length == 0) {
         //Alert error when implemented
-        console.log("No data avaiable for this country");
+        console.log("No data avaiable for this country", 'warning');
         return false;
     }
 

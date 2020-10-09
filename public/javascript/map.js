@@ -31,15 +31,15 @@ function initMap() {
                 console.log(response)
                 isFetch = false;
                 if (response.status != "OK") {
-                    //Alert error when implemented
-                    console.log("Clicked country was not recognized");
+                     //Alert error when implemented
+                    show_alert("Clicked country was not recognized", 'danger');
                     return false;
                 }
 
                 if (response.plus_code.compound_code == undefined) { //If first possible path is not correct
                     if (response.results[response.results.length - 1].formatted_address == undefined) { //If second possible path is not correct
                         //Alert error when implemented
-                        console.log("Clicked country was not recognized");
+                        show_alert("Clicked country was not recognized", 'danger');
                         return false;
                     } else {
                         country = response.results[response.results.length - 1].formatted_address;
@@ -49,14 +49,12 @@ function initMap() {
                     country = country[country.length - 1];
                 }
                 if (country.includes("Ocean")) {
-                    //Alert error when implemented
-                    console.log("Please select a valid country");
+                     //Alert error when implemented
+                    show_alert("Please select a valid country", 'danger');
                     return false;
                 }
                 console.log(country)
-                document.querySelector('#selected-country').innerHTML = country;
-                document.querySelector('#category').disabled = false;
-                document.querySelector('#subcategory').disabled = false;
+                enabled_categories()
                 geocoder.geocode({ 'address': country }, function(results, status) {
                     if (status == google.maps.GeocoderStatus.OK) {
                         map.setCenter(results[0].geometry.location);
@@ -79,6 +77,8 @@ function resetView() {
         marker.setMap(null)
     }
 }
+
+document.querySelector('#reset').addEventListener('click', resetView)
 
 async function getData(url = '') {
     if (isFetch) { //Dont fetch if another fetch is in progress
