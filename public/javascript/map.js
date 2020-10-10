@@ -28,17 +28,14 @@ function initMap() {
         });
         getData(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${clickInput.latLng.lat()},${clickInput.latLng.lng()}&key=${key}&language=en-GB`)
             .then(response => {
-                console.log(response)
                 isFetch = false;
                 if (response.status != "OK") {
-                     //Alert error when implemented
                     show_alert("Clicked country was not recognized", 'danger');
                     return false;
                 }
 
                 if (response.plus_code.compound_code == undefined) { //If first possible path is not correct
                     if (response.results[response.results.length - 1].formatted_address == undefined) { //If second possible path is not correct
-                        //Alert error when implemented
                         show_alert("Clicked country was not recognized", 'danger');
                         return false;
                     } else {
@@ -49,12 +46,10 @@ function initMap() {
                     country = country[country.length - 1];
                 }
                 if (country.includes("Ocean")) {
-                     //Alert error when implemented
                     show_alert("Please select a valid country", 'danger');
                     return false;
                 }
-                console.log(country)
-                enabled_categories()
+                enable_categories()
                 geocoder.geocode({ 'address': country }, function(results, status) {
                     if (status == google.maps.GeocoderStatus.OK) {
                         map.setCenter(results[0].geometry.location);
@@ -66,11 +61,17 @@ function initMap() {
                         }
                     }
                 });
-            });
+            })
+            .catch(error => show_alert(error, "danger"))
     });
 }
 
 function resetView() {
+    country = null;
+    document.querySelector('#selected-country').innerHTML = "None";
+    document.querySelector('#category').disabled = true;
+    document.querySelector('#subcategory').disabled = true;
+    document.querySelector('#search').disabled = true;
     map.setZoom(2.9);
     map.setCenter({ lat: 20, lng: 10 })
     if (marker != undefined) {

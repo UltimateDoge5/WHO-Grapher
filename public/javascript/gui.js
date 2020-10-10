@@ -2,14 +2,12 @@ let category = 'suicide';
 let subcategory = 'Suicide rate (per 100,000 population)';
 
 // enable tooltips
-
-$(function () {
+$(function() {
     $('[data-toggle="tooltip"]').tooltip()
 })
 
 // enable selects
-
-function enabled_categories() {
+function enable_categories() {
     document.querySelector('#selected-country').innerHTML = country;
     document.querySelector('#category').disabled = false;
     document.querySelector('#subcategory').disabled = false;
@@ -43,16 +41,13 @@ const alert_html = (alert, type) => {
 }
 
 // show alert
-
 const show_alert = (alert, type) => {
     document.querySelector('#alerts').innerHTML = alert_html(alert, type);
 }
 
-
 let category_select = document.querySelector('#category');
 
 // create options in category select
-
 const prepare_categories_options = () => {
     for (let category in categories) {
         const category_value = category;
@@ -65,12 +60,11 @@ const prepare_categories_options = () => {
 prepare_categories_options()
 
 // create options in subcategory select
-
 function prepare_subcategories_options() {
     let subcategory_select = document.querySelector('#subcategory');
     subcategory_select.innerHTML = "";
     let subcategories;
-    category = this.value || 'suicide'; 
+    category = this.value || 'suicide';
     choose_subcategory()
 
     subcategories = categories[category]['subcategories'];
@@ -89,7 +83,6 @@ function choose_subcategory() {
 }
 
 // search code for api url
-
 const search_code = (category, subcategory) => {
     for (let sub of categories[category]['subcategories']) {
         if (sub.name === subcategory) {
@@ -108,7 +101,7 @@ document.querySelector('#subcategory').addEventListener('change', choose_subcate
 
 document.querySelector('#search').addEventListener('click', () => {
     const active_sub_code = search_code(category, subcategory);
-    const data_to_url = {'iso': iso_code,'code': active_sub_code}
+    const data_to_url = { 'iso': iso_code, 'code': active_sub_code }
     update_modal_header();
 
     console.log(data_to_url)
@@ -120,7 +113,6 @@ document.querySelector('#search').addEventListener('click', () => {
         })
         .catch(err => console.log(err))
 })
-
 
 function change_type_chart() {
     chart.config.type = this.value;
