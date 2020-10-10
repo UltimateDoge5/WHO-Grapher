@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+    <head>
+        <meta charset="UTF-8">
+        <title>HACK HEORES APP</title>
+        <!-- POLYFILL -->
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+        <!-- GOOGLE MAPS -->
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDMlOAWV0hPByaFcpfarjqMs6-iZImWp9A&callback=initMap&libraries=&v=weekly&language=en&region=US" defer></script>
+        <!--CSS FILE-->
+        <link rel="stylesheet" href="./public/style/style.css">
+        <!--FONT AWESOME-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+        <!--GOOGLE FONTS-->
+        <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+        <!--BOOTSTRAP CSS-->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <!-- CHART JS -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    </head>
+
+    <body>
+
+        <nav class='main-nav'>
+            <div>Selected Country: <b id='selected-country'>None</b></div>
+            <button id='reset'>
+                <span><i class="fas fa-undo"></i> RESET</span>
+            </button>
+        </nav>
+
+        <nav class='mode'>
+            <div>Mode:</div>
+            <button id="single" data-toggle="tooltip" data-placement="bottom" title="Single Mode">
+                <i class="fas fa-user"></i>
+            </button>
+            <button id="multi" data-toggle="tooltip" data-placement="bottom" title="Multi Mode">
+                <i class="fas fa-users"></i>
+            </button>
+            <button id="global" data-toggle="tooltip" data-placement="bottom" title="Global Mode">
+                <i class="fas fa-globe-americas"></i>
+            </button>
+        </nav>
+
+        <div id="sidebar" class="side-active">
+
+            <div id='categories'>
+                <h2 class='categories-title'>Categories</h2>
+                <select id="category" disabled>
+                </select>
+
+                <select id="subcategory" disabled>
+                </select>
+
+                <button id='search' data-toggle="modal" data-target="#chart_modal" disabled>search</button>
+
+            </div>
+
+            <button>
+                <span id="open-arrow">&rsaquo;</span>
+            </button>
+        </div>
+
+        <div id="map"></div>
+
+        <div id="alerts">
+           
+        </div>
+          
+          <!-- Modal -->
+          <div class="modal fade" id="chart_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    
+                    <div class="col-md-10">
+                        <canvas id="chart"></canvas>
+                    </div>
+
+                    <div class="col-md-2" class='settings'>
+                        <div>
+                            <h4>Chart Type</h4>
+                            <select id="chart_type">
+                                <option value="bar">BAR</option>
+                                <option value="line">LINE</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                </div>
+              </div>
+            </div>
+          </div>
+
+    <!-- SCRIPTS -->
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script src="./public/javascript/objects.js"></script>
+    <script src="./public/javascript/gui.js"></script>
+    <script src="./public/javascript/map.js"></script>
+    <script src="./public/javascript/charts.js"></script>
+</body>
+</html>

@@ -3,11 +3,13 @@ let geocoder;
 let map;
 let isFetch = false;
 let marker;
+let iso_code;
+let country;
 
 function initMap() {
     map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: 20, lng: 10 },
-        zoom: 2.7,
+        zoom: 2.9,
         mapTypeControl: false,
         draggable: false,
         scaleControl: false,
@@ -26,12 +28,15 @@ function initMap() {
         });
         getData(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${clickInput.latLng.lat()},${clickInput.latLng.lng()}&key=${key}&language=en-GB`)
             .then(response => {
-                console.log(response)
                 isFetch = false;
-                let country;
+                if (response.status != "OK") {
+                    show_alert("Clicked country was not recognized", 'danger');
+                    return false;
+                }
+
                 if (response.plus_code.compound_code == undefined) { //If first possible path is not correct
                     if (response.results[response.results.length - 1].formatted_address == undefined) { //If second possible path is not correct
-                        console.log("Clicked country was not recognized");
+                        show_alert("Clicked country was not recognized", 'danger');
                         return false;
                     } else {
                         country = response.results[response.results.length - 1].formatted_address;
@@ -40,25 +45,41 @@ function initMap() {
                     country = response.plus_code.compound_code.split(", ");
                     country = country[country.length - 1];
                 }
-                console.log(country)
-                document.querySelector('#selected-country').innerHTML = country
+                if (country.includes("Ocean")) {
+                    show_alert("Please select a valid country", 'danger');
+                    return false;
+                }
+                enable_categories()
                 geocoder.geocode({ 'address': country }, function(results, status) {
                     if (status == google.maps.GeocoderStatus.OK) {
                         map.setCenter(results[0].geometry.location);
-                        map.setZoom(5);
                         iso_code = country_to_iso(country);
-                        console.log(iso_code)
+                        if (country == "Russia") {
+                            map.setZoom(4)
+                        } else {
+                            map.setZoom(5);
+                        }
                     }
                 });
-            });
+            })
+            .catch(error => show_alert(error, "danger"))
     });
 }
 
-function reset() {
-    map.setZoom(2.7);
+function resetView() {
+    country = null;
+    document.querySelector('#selected-country').innerHTML = "None";
+    document.querySelector('#category').disabled = true;
+    document.querySelector('#subcategory').disabled = true;
+    document.querySelector('#search').disabled = true;
+    map.setZoom(2.9);
     map.setCenter({ lat: 20, lng: 10 })
-    marker.setMap(null)
+    if (marker != undefined) {
+        marker.setMap(null)
+    }
 }
+
+document.querySelector('#reset').addEventListener('click', resetView)
 
 async function getData(url = '') {
     if (isFetch) { //Dont fetch if another fetch is in progress
