@@ -222,7 +222,7 @@ const countries = {
     "Ukraine": "UKR",
     "United Arab Emirates": "ARE",
     "United Kingdom": "GBR",
-    "United States": "USA",
+    "USA": "USA",
     "Uruguay": "URY",
     "Uzbekistan": "UZB",
     "Vanuatu": "VUT",

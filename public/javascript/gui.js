@@ -120,3 +120,11 @@ document.querySelector('#search').addEventListener('click', () => {
         })
         .catch(err => console.log(err))
 })
+
+
+function change_type_chart() {
+    chart.config.type = this.value;
+    chart.update()
+}
+
+document.querySelector('#chart_type').addEventListener('click', change_type_chart)
