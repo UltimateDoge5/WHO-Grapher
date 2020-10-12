@@ -1,6 +1,6 @@
 // country list
 
-const countries = {
+const countriesObject = {
     "Afghanistan": "AFG",
     "Albania": "ALB",
     "Algeria": "DZA",
@@ -279,6 +279,14 @@ const categories = {
     }
 }
 
-const country_to_iso = country => {
-    return countries[country]
+const countryToIso = country => {
+    return countriesObject[country]
+}
+
+function countriesToIso(countries) {
+    let isoCodes = [];
+    for (country of countries) {
+        isoCodes.push(countriesObject[country]);
+    }
+    return isoCodes;
 }

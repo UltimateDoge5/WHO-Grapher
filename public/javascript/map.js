@@ -3,8 +3,11 @@ let geocoder;
 let map;
 let isFetch = false;
 let marker;
-let iso_code;
+let isoCode;
 let country;
+let mode = "single"; //Map modes: single*, multi, global 
+let countries = [];
+let isoCodes = []
 
 function initMap() {
     map = new google.maps.Map(document.getElementById("map"), {
@@ -17,6 +20,7 @@ function initMap() {
         navigationControl: false,
         streetViewControl: false,
     });
+
     geocoder = new google.maps.Geocoder();
     map.addListener("click", (clickInput) => {
         if (marker != undefined) {
@@ -53,7 +57,6 @@ function initMap() {
                 geocoder.geocode({ 'address': country }, function(results, status) {
                     if (status == google.maps.GeocoderStatus.OK) {
                         map.setCenter(results[0].geometry.location);
-                        iso_code = country_to_iso(country);
                         if (country == "Russia") {
                             map.setZoom(4)
                         } else {
@@ -66,7 +69,21 @@ function initMap() {
     });
 }
 
+function addCountry() { //Adds the country to the array and resets the view
+    if (country == null) {
+        show_alert("Cannot add nothing to country list", "warning");
+        return false;
+    }
+
+    countries.push(country);
+    country = null;
+    map.setZoom(2.9);
+    map.setCenter({ lat: 20, lng: 10 })
+    document.querySelector('#selected-country').innerHTML = "None";
+}
+
 function resetView() {
+    countries = null;
     country = null;
     document.querySelector('#selected-country').innerHTML = "None";
     document.querySelector('#category').disabled = true;
@@ -82,11 +99,6 @@ function resetView() {
 document.querySelector('#reset').addEventListener('click', resetView)
 
 async function getData(url = '') {
-    if (isFetch) { //Dont fetch if another fetch is in progress
-        console.log("Fetch in progress")
-        return false;
-    }
-    isFetch = true;
     const response = await fetch(url)
     return response.json();
 }
