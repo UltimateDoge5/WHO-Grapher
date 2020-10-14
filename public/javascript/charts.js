@@ -3,6 +3,7 @@ let chart;
 
 function createChart(data = null, type = "bar", years, title = "", country) { //Create chart with one country
     let sum = 0;
+    let colors = GenerateColors(data);
     for (index of data) {
         sum += index;
     }
@@ -16,8 +17,8 @@ function createChart(data = null, type = "bar", years, title = "", country) { //
             datasets: [{
                 label: country,
                 data: data,
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: colors.background,
+                borderColor: colors.border,
                 borderWidth: 1
             }]
         },
@@ -101,11 +102,12 @@ function getDatasets(data, countries) { //Parse the data of multiple countries a
     let result = [];
     for (country in data) {
         let parsedCountry = getDataset(data[country])
+        let colors = GenerateColors(parsedCountry)
         let dataset = {
             label: countries[i],
             data: parsedCountry,
-            backgroundColor: 'rgba(255, 99, 132, 0.2)', //Implement generation of random RGB colors for every country
-            borderColor: 'rgba(255, 99, 132, 1)',
+            backgroundColor: colors['background'][0], //Implement generation of random RGB colors for every country
+            borderColor: colors['border'][0],
             borderWidth: 1
         };
         i++;
@@ -213,4 +215,23 @@ function fetchLoop(code, isoCodes) { //Queue fetch as many countries for fetch a
                 })
         }
     })
+}
+
+function GenerateColors(data) {
+    let colors = {
+        background: [],
+        border: []
+    }
+
+    for(let i = 0; i < data.length; i++){
+        let rgb = []
+        for(let j = 0; j < 3; j++){
+            let random = Math.floor(Math.random() * (256 - 100)) + 100; // min = 150 || max = 256
+            rgb.push(random)
+        }
+        const to_rgba = (aplha) => `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${aplha})` 
+        colors['background'].push(to_rgba('0.6'));
+        colors['border'].push(to_rgba('1'));
+    }
+    return colors
 }
