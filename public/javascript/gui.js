@@ -15,7 +15,6 @@ function enable_categories() {
 }
 
 // on/off sidebar
-
 const toggle_sidebar = () => {
     let sidebar = document.querySelector('#sidebar');
 
@@ -86,7 +85,6 @@ function choose_subcategory() {
 const search_code = (category, subcategory) => {
     for (let sub of categories[category]['subcategories']) {
         if (sub.name === subcategory) {
-            console.log(sub.code)
             return sub.code
         }
     }
@@ -101,17 +99,17 @@ document.querySelector('#subcategory').addEventListener('change', choose_subcate
 
 document.querySelector('#search').addEventListener('click', () => {
     const active_sub_code = search_code(category, subcategory);
-    const data_to_url = { 'iso': iso_code, 'code': active_sub_code }
     update_modal_header();
 
-    console.log(data_to_url)
-    getData(`/api/${data_to_url.code}?country=${data_to_url.iso}`)
-        .then(response => {
-            isFetch = false;
-            renderChart(response, country);
-            console.log(response)
-        })
-        .catch(err => console.log(err))
+    if (mode == "single") {
+        fetchSingleCountry(active_sub_code)
+    } else if (mode == "multi") {
+        fetchMultipleCountries(active_sub_code)
+    } else if (mode == "global") {
+        //Global mode fetch function here
+    } else {
+        show_alert(`No mode named: ${mode}`, "danger")
+    }
 })
 
 function change_type_chart() {
