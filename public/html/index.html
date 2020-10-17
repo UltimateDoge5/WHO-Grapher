@@ -16,42 +16,62 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
         <!-- CHART JS -->
         <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+        <!-- FLAGS -->
+        <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" integrity="sha512-Cv93isQdFwaKBV+Z4X8kaVBYWHST58Xb/jVOcV9aRsGSArZsgAnFIhMpDoMDcFNoUtday1hdjn0nGp3+KZyyFw==" crossorigin="anonymous" /> -->
+
     </head>
 
     <body>
 
         <nav class='main-nav'>
             <div>Selected Country: <b id='selected-country'>None</b></div>
-            <button id='reset'>
-                <span><i class="fas fa-undo"></i> RESET</span>
-            </button>
+
+            <div>
+                <button id='add'>
+                    <span><i class="fas fa-plus"></i> ADD</span>
+                </button>
+                <button id='reset'>
+                    <span><i class="fas fa-undo"></i> RESET</span>
+                </button>
+            </div>
         </nav>
 
-        <nav class='mode'>
+        <nav class='mode-nav'>
             <div>Mode:</div>
-            <button id="single" data-toggle="tooltip" data-placement="bottom" title="Single Mode">
+            <button id="single" class='mode active-mode' data-toggle="tooltip" data-placement="bottom" title="Single Mode" value="single">
                 <i class="fas fa-user"></i>
             </button>
-            <button id="multi" data-toggle="tooltip" data-placement="bottom" title="Multi Mode">
+            <button id="multi" class='mode' data-toggle="tooltip" data-placement="bottom" title="Multi Mode" value='multi'>
                 <i class="fas fa-users"></i>
             </button>
-            <button id="global" data-toggle="tooltip" data-placement="bottom" title="Global Mode">
+            <button id="global"  class='mode' data-toggle="tooltip" data-placement="bottom" title="Global Mode" value='global'>
                 <i class="fas fa-globe-americas"></i>
+            </button>
+            <button id="tutorial" data-toggle="tooltip" data-placement="bottom" title="Tutorial Mode">
+                <i class="fas fa-chalkboard-teacher"></i>
             </button>
         </nav>
 
         <div id="sidebar" class="side-active">
+            <div class="options">
+                <div id='categories'>
+                    <h2 class='categories-title'>Categories</h2>
+                    <select id="category" disabled>
+                    </select>
 
-            <div id='categories'>
-                <h2 class='categories-title'>Categories</h2>
-                <select id="category" disabled>
-                </select>
+                    <select id="subcategory" disabled>
+                    </select>
 
-                <select id="subcategory" disabled>
-                </select>
+                    <button id='search' data-toggle="modal" data-target="#chart_modal" disabled>search</button>
 
-                <button id='search' data-toggle="modal" data-target="#chart_modal" disabled>search</button>
+                </div>
 
+                <div id='selected-countries'>
+                    <h2 class='countries-title'>Countries</h2>
+                    <ul class='selected-countries__list'>
+                    </ul>
+                </div>
+                
             </div>
 
             <button>
@@ -67,13 +87,19 @@
           
           <!-- Modal -->
           <div class="modal fade" id="chart_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
+                  <div>
+                    <button class='fullscreen'>
+                        <span><i class="fas fa-expand"></i><span>
+                    </button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                 
                 </div>
                 <div class="modal-body">
                     
@@ -96,14 +122,40 @@
             </div>
           </div>
 
+        <!-- TOASTS FOR TUTORIAL MODE -->
+    
+        <div class="container_toasts">
+
+            <button class='exit'>
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div class='end_tutorial'>
+                The tutorial has been completed
+            </div>
+
+            <div class="toast offset-lg-5 col-lg-2" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
+                <div class="toast-header">
+                  <strong class="mr-auto">TUTORIAL MODE</strong>
+                  <button type="button" class="ml-2 mb-1" id="next">
+                    <span><i class="fas fa-long-arrow-alt-right"></i></span>
+                  </button>
+                </div>
+                <div class="toast-body">
+                  
+                </div>
+              </div>
+
+          </div>
+
     <!-- SCRIPTS -->
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
     <script src="./public/javascript/objects.js"></script>
-    <script src="./public/javascript/gui.js"></script>
     <script src="./public/javascript/map.js"></script>
+    <script src="./public/javascript/gui.js"></script>
     <script src="./public/javascript/charts.js"></script>
 </body>
 </html>

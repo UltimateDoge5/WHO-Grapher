@@ -83,7 +83,7 @@ function addCountry() { //Adds the country to the array and resets the view
 }
 
 function resetView() {
-    countries = null;
+    countries = [];
     country = null;
     document.querySelector('#selected-country').innerHTML = "None";
     document.querySelector('#category').disabled = true;
@@ -96,7 +96,10 @@ function resetView() {
     }
 }
 
-document.querySelector('#reset').addEventListener('click', resetView)
+document.querySelector('#reset').addEventListener('click', () => {
+    resetView()
+    document.querySelector('.selected-countries__list').innerHTML = "";
+})
 
 async function getData(url = '') {
     const response = await fetch(url)
