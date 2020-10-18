@@ -282,42 +282,40 @@ const categories = {
 let toasts = [
     {
         'text': 'Click on any country!',
-        'position': ['offset-lg-5', '45%']
+        'position': '6 / 6 / 7 / 8'
     },
     {
         'text': 'You can reset view and selected country!',
-        'position': ['offset-lg-6', '15%']
+        'position': '3 / 6 / 4 / 9'
     },
     {
         'text': 'Select categories and subcategories!',
-        'position': ['offset-lg-3', '15%']
+        'position': '3 / 4 / 4 / 6'
     },
     {
         'text': 'Click the button!',
-        'position': ['offset-lg-3', '30%']
+        'position': '4 / 4 / 5 / 6'
     },
     {
         'text': 'You can change the chart type!',
-        'position': ['offset-lg-8', '35%']
+        'position': '5 / 10 / 6 / 12'
     },
     {
         'text': 'You can display the graph on fullscreen!',
-        'position': ['offset-lg-7', '5%']
+        'position': '2 / 9 / 3 / 11'
     },
     {
         'text': 'You can also choose different modes!',
-        'position': ['offset-lg-9', '15%']
+        'position':'3 / 10 / 3 / 12'
     },
     {
         'text': 'Add country to country list! (multi mode)',
-        'position': ['offset-lg-5', '15%']
+        'position': '3 / 6 / 4 / 9'
     },
     {
         'text': 'Sample country list',
-        'position': ['offset-lg-2', '55%']
-    },
-
-
+        'position': '7 / 4 / 8 / 6'
+    }
 ]
 
 const countryToIso = country => {

@@ -1,5 +1,6 @@
 let category = "suicide";
 let subcategory = "Suicide rate (per 100,000 population)";
+const max_z_index = "3001";
 
 // enable tooltips
 $(function() {
@@ -29,8 +30,7 @@ const toggle_sidebar = () => {
     }
 }
 
-document.querySelector("#open-arrow").addEventListener("click", toggle_sidebar);
-
+document.querySelector('#open-arrow').addEventListener('click', toggleSidebar);
 
 // ALERTS
 const alert_html = (alert, type) => {
@@ -186,8 +186,6 @@ const search_code = (category, subcategory) => {
     }
 }
 
-
-
 category_select.addEventListener("change", prepare_subcategories_options);
 document.querySelector("#subcategory").addEventListener("change", choose_subcategory)
 
@@ -214,43 +212,57 @@ function change_type_chart() {
 document.querySelector("#chart_type").addEventListener("click", change_type_chart)
 
 // TUTORIAL MODE
-
 let is_tutorial_mode = false;
 let number_hint = 0;
 
-// reset tutorial mode, reset variables
 
+// reset css styles
+const reset_css = () => {
+    document.querySelector(".container_toasts").style.visibility = "hidden";
+    document.querySelector('.end_tutorial').style.visibility = "hidden"
+    document.querySelector('.main-nav').style.zIndex = '1';
+    document.querySelector('#sidebar').classList.remove('side-active');
+    document.querySelector('#sidebar').classList.add('side-hidden')
+    document.querySelector('.mode-nav').style.zIndex = "1";
+    document.querySelector("#single").click();
+    document.querySelector('.fullscreen').style.color = '';
+    document.querySelector('.fullscreen').style.fontSize = '';
+    close_modal()
+}
+
+// reset tutorial mode, reset variables
 const reset_tutorial_mode = () => { 
     let toast = document.querySelector(".toast")
     is_tutorial_mode = false;
     
     if(number_hint){
-        toast.classList.remove(toasts[number_hint].position[0]);
-        toast.classList.add(toasts[0].position[0]);
-        toast.style.top = toasts[0].position[1];
+        toast.style.gridArea = toasts[0].position;
     }
     
     number_hint = 0;
-    document.querySelector(".container_toasts").style.display = "none";
 }
 
 // turn on tutorial mode
-
 document.querySelector("#tutorial").addEventListener("click", () => {
     is_tutorial_mode = true;
     $(".toast").toast("show")
-    document.querySelector(".container_toasts").style.display = "block";
+    document.querySelector(".container_toasts").style.visibility = "visible";
     document.querySelector('.end_tutorial').style.visibility = "hidden";
     render_toast()
 })
 
 // turn off tutorial mode
-
 document.querySelector(".exit").addEventListener("click", () => {
     reset_tutorial_mode()
-})
-
+    reset_css()
+}
 // imitating user events
+
+
+const active_sidebar = () => {
+    document.querySelector('#sidebar').classList.remove('side-hidden');
+    document.querySelector('#sidebar').classList.add('side-active')
+}
 
 const show_modal = () => {
     document.querySelector("#search").disabled = false;
@@ -259,6 +271,7 @@ const show_modal = () => {
 }
 
 const close_modal = () => {
+    document.querySelector('.modal').style.zIndex = '1050';
     document.querySelector(".close").click()
 }
 
@@ -295,30 +308,50 @@ const render_toast = () => {
     let toast = document.querySelector(".toast")
     let toast_body = document.querySelector(".toast-body");
     toast_body.innerHTML = active.text;
-    
-    if(!number_hint){ // if toast is first
-        return true;
-    }
-    else if (number_hint === 4){ // when click on search button
-        country = "Poland";
-        show_modal();
-    }
-    else if(number_hint === 6){ // when click on close modal button
-        close_modal();
-    }
-    else if(number_hint === 7){ // when change mode to multi mode
-        change_to_multi_mode()
-    } 
-    else if(number_hint === 8){ // create sample country list
-        sample_country_list(0);
-        sample_country_list(1);
-        sample_country_list(2);
+    console.log(number_hint)
+
+    switch(number_hint){
+        case 0: 
+            return true;
+            break;
+        case 1:
+            document.querySelector('.main-nav').style.zIndex = max_z_index;
+            break;
+        case 2:
+            active_sidebar()
+            document.querySelector('.main-nav').style.zIndex = "1";
+            document.querySelector('#sidebar').style.zIndex = max_z_index;
+            break;
+        case 4:
+            document.querySelector('#sidebar').style.zIndex = "1";
+            country = "Poland";
+            show_modal();
+            break;
+        case 5:
+            document.querySelector('.fullscreen').style.color = 'rgb(66, 117, 244)';
+            document.querySelector('.fullscreen').style.fontSize = '2rem';
+            break;
+        case 6:
+            document.querySelector('.fullscreen').style.color = '';
+            document.querySelector('.fullscreen').style.fontSize = '';
+            document.querySelector('.mode-nav').style.zIndex = max_z_index;
+            close_modal();
+            break;
+        case 7:
+            change_to_multi_mode();
+            document.querySelector('.mode-nav').style.zIndex = "1";
+            document.querySelector('.main-nav').style.zIndex = max_z_index;
+            break;
+        case 8:
+            document.querySelector('.main-nav').style.zIndex = "1";
+            document.querySelector('#sidebar').style.zIndex = max_z_index;
+            sample_country_list(0); sample_country_list(1); sample_country_list(2);
+            break;
     }
 
-    toast.classList.remove(toasts[number_hint-1].position[0]);
-    toast.classList.add(active.position[0]);
-    toast.style.top = active.position[1];
+    toast.style.gridArea = active.position;
 }
+
 
 document.querySelector("#next").addEventListener("click", () => {
     next_toast()

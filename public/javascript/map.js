@@ -53,7 +53,16 @@ function initMap() {
                     show_alert("Please select a valid country", 'danger');
                     return false;
                 }
+          
+                console.log(country)
+                document.querySelector('#selected-country').innerHTML = country
+
+                if (country.endsWith('Saudi Arabia')){
+                    let country_arr = country.split(" ");
+                    country = `${country_arr[country_arr.length - 2]} ${country_arr[country_arr.length - 1]}`;
+                }
                 enable_categories()
+          
                 geocoder.geocode({ 'address': country }, function(results, status) {
                     if (status == google.maps.GeocoderStatus.OK) {
                         map.setCenter(results[0].geometry.location);

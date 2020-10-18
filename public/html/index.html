@@ -15,10 +15,9 @@
         <!--BOOTSTRAP CSS-->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
         <!-- CHART JS -->
-        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css" integrity="sha512-/zs32ZEJh+/EO2N1b0PEdoA10JkdC3zJ8L5FTiQu82LR9S/rOQNfQN7U59U9BC12swNeRAz3HSzIL2vpp4fv3w==" crossorigin="anonymous" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha512-s+xg36jbIujB2S2VKfpGmlC3T5V2TF3lY48DX7u2r9XzGzgPsa6wTpOQA7J9iffvdeBN0q9tKzRxVxw1JviZPg==" crossorigin="anonymous"></script>
         <!-- FLAGS -->
-        <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" integrity="sha512-Cv93isQdFwaKBV+Z4X8kaVBYWHST58Xb/jVOcV9aRsGSArZsgAnFIhMpDoMDcFNoUtday1hdjn0nGp3+KZyyFw==" crossorigin="anonymous" /> -->
-
     </head>
 
     <body>
@@ -35,7 +34,7 @@
                 </button>
             </div>
         </nav>
-
+      
         <nav class='mode-nav'>
             <div>Mode:</div>
             <button id="single" class='mode active-mode' data-toggle="tooltip" data-placement="bottom" title="Single Mode" value="single">
@@ -52,7 +51,7 @@
             </button>
         </nav>
 
-        <div id="sidebar" class="side-active">
+        <div id="sidebar" class="side-hidden">
             <div class="options">
                 <div id='categories'>
                     <h2 class='categories-title'>Categories</h2>
@@ -61,6 +60,7 @@
 
                     <select id="subcategory" disabled>
                     </select>
+
 
                     <button id='search' data-toggle="modal" data-target="#chart_modal" disabled>search</button>
 
@@ -81,16 +81,15 @@
 
         <div id="map"></div>
 
-        <div id="alerts">
-           
-        </div>
+        <div id="alerts"></div>
           
           <!-- Modal -->
-          <div class="modal fade" id="chart_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal fade" id="chart_modal">
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                  <h5 class="modal-title" >Modal title</h5>
+
                   <div>
                     <button class='fullscreen'>
                         <span><i class="fas fa-expand"></i><span>
@@ -115,8 +114,8 @@
                                 <option value="line">LINE</option>
                             </select>
                         </div>
-                    </div>
-                    
+                        <div class='difference'></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -130,15 +129,17 @@
                 <i class="fas fa-times"></i>
             </button>
 
-            <div class='end_tutorial'>
-                The tutorial has been completed
-            </div>
 
-            <div class="toast offset-lg-5 col-lg-2" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
+            <h1 class='end_tutorial'>
+                The tutorial has been completed
+            </h1>
+
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
                 <div class="toast-header">
                   <strong class="mr-auto">TUTORIAL MODE</strong>
                   <button type="button" class="ml-2 mb-1" id="next">
-                    <span><i class="fas fa-long-arrow-alt-right"></i></span>
+                    <span>NEXT</span>
+
                   </button>
                 </div>
                 <div class="toast-body">

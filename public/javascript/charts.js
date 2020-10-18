@@ -10,6 +10,7 @@ function createChart(data = null, type = "bar", years, title = "", country) { //
     if (sum == 0) {
         show_alert("Data is equal to zero and is not able to be displayed on graph", 'info')
     }
+  
     chart = new Chart(canvas, {
         type: type,
         data: {
@@ -36,6 +37,8 @@ function createChart(data = null, type = "bar", years, title = "", country) { //
             }
         }
     });
+  
+    pointDifference()
 }
 
 function createMultiChart(datasets, type = "bar", years, title = "") { //Create chart with multiple countries
@@ -59,6 +62,8 @@ function createMultiChart(datasets, type = "bar", years, title = "") { //Create 
             }
         }
     });
+  
+    pointDifference()
 }
 
 function getDataset(data) { //Parse the data to human readable & chart compatible format
@@ -138,7 +143,26 @@ function getYears(data) {
     return years;
 }
 
+const pointDifference = () => {
+    const roundToTwo = num => +(Math.round(num + "e+2")  + "e-2");
+    for(let country of chart.data.datasets){
+        const data = country.data;
+        const difference = data[data.length - 1] - data[0];
+        const between = [chart.data.labels[0], chart.data.labels[chart.data.labels.length - 1]];
+        const percent = Math.abs(roundToTwo(difference / data[0] * 100));
+        if (difference > 0){ // increased
+            document.querySelector('.difference').innerHTML += `<p>For ${country.label}, between years <b>${between[0]}</b> and <b>${between[1]}</b> ${subcategory} increased by <b>${percent}</b>%</p>`;
+        }
+        else{ // decreased
+            document.querySelector('.difference').innerHTML += `<p>For ${country.label}, between years <b>${between[0]}</b> and <b>${between[1]}</b> ${subcategory} decreased by <b>${percent}</b>%</p>`;
+        }
+    }
+    
+}
+
 function renderChart(data, country) {
+
+    document.querySelector('.difference').innerHTML = ""; // remove information about point difference
     if (data.error != undefined) {
         show_alert("Data was not fetched succesfully", 'warning');
         return false;
@@ -162,6 +186,8 @@ function renderChart(data, country) {
 }
 
 function renderMultiChart(data, countries) {
+    document.querySelector('.difference').innerHTML = ""; // remove information about point difference
+
     if (countries.length < 2) {
         show_alert("Please select 2 or more countries", "warning")
         return false;
