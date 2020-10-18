@@ -10,7 +10,7 @@ function createChart(data = null, type = "bar", years, title = "", country) { //
     if (sum == 0) {
         show_alert("Data is equal to zero and is not able to be displayed on graph", 'info')
     }
-
+  
     chart = new Chart(canvas, {
         type: type,
         data: {
@@ -37,6 +37,7 @@ function createChart(data = null, type = "bar", years, title = "", country) { //
             }
         }
     });
+  
     pointDifference()
 }
 
@@ -61,6 +62,7 @@ function createMultiChart(datasets, type = "bar", years, title = "") { //Create 
             }
         }
     });
+  
     pointDifference()
 }
 
@@ -158,10 +160,9 @@ const pointDifference = () => {
     
 }
 
-
 function renderChart(data, country) {
-    document.querySelector('.difference').innerHTML = ""; // remove information about point difference
 
+    document.querySelector('.difference').innerHTML = ""; // remove information about point difference
     if (data.error != undefined) {
         show_alert("Data was not fetched succesfully", 'warning');
         return false;

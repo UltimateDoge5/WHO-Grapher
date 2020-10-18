@@ -1,29 +1,56 @@
+/* ANIMATIONS */
+
+@keyframes SlideUp {
+    from{
+        top: 100%;
+    }
+    to{
+        top: 90%;
+    }
+}
+
+/* BODY */
+
 html,
 body {
     height: 100%;
     margin: 0;
     padding: 0;
     font-family: 'Lato', sans-serif;
-    color: #303030;
+    /* background-color: lime; */
 }
+
+/* ALL BUTTON  */
+
+button{
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+}
+
+/* GOOGLE MAP */
 
 #map {
     height: 100%;
     cursor: pointer;
 }
 
+/* NAV */
+
 nav {
-    width: 40%;
+    width: 50%;
     height: 50px;
     font-size: 16pt;
     margin: 10px auto;
     background-color: rgba(255, 255, 255, 0.9);
-    display: flex;
+    top: 10px;
+    left: 20%;
+    z-index: 1;
+    border-radius: 20px;
+    display: flex !important;
     justify-content: space-around;
     align-items: center;
-<<<<<<< Updated upstream
     position: fixed;
-=======
 }
 
 #reset, #add {
@@ -32,7 +59,6 @@ nav {
     font-weight: 700;
     margin: 0px 10px;
     position: relative;
-    z-index: 1000000000;
 }
 
 #add{
@@ -46,16 +72,25 @@ nav {
     margin: 10px auto;
     background-color: rgba(255, 255, 255, 0.9);
     position: absolute;
->>>>>>> Stashed changes
     top: 10px;
-    left: 30%;
+    left: 75%;
     z-index: 1;
     border-radius: 20px;
+    display: flex !important;
+    justify-content: space-around;
+    align-items: center;
 }
 
-#reset {
+#single, #multi, #global, #tutorial {
     color: rgb(66, 117, 244);
 }
+
+.active-mode{
+    transform: scale(1.2);
+    transition: .3s 0s ease-in;
+}
+
+/* SIDEBAR */
 
 #sidebar {
     width: 30%;
@@ -68,7 +103,7 @@ nav {
     z-index: 1;
 }
 
-.side-hide {
+.side-hidden {
     transform: translateX(-80%);
 }
 
@@ -76,22 +111,63 @@ nav {
     transform: translateX(0%);
 }
 
-#categories {
+.options{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 80%;
     height: 100%;
     box-shadow: 1px 1px 5px 2px rgb(66, 117, 244);
     background-color: rgba(255, 255, 255, 0.8);
 }
 
+#categories {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#selected-countries{
+    width: 100%;
+    padding: 0px 40px;
+    display: none;
+}
+
+.selected-countries__list{
+    list-style-type:none;
+}
+
+.selected-countries__item{
+    padding: 0px 20px;
+    font-size: 14pt;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    margin: 10px 0px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between;
+}
+
+.remove{
+    color: rgb(56, 56, 56);
+    transition: .2s 0s ease-in;
+}
+
+.remove:hover{
+    color: #000;
+}
+
 #sidebar button {
     outline: none;
     background: transparent;
     border: none;
+    display: flex;
+    align-items: center;
 }
 
 #open-arrow {
-    width: 20%;
-    height: 100%;
+    height: 50%;
     border: none;
     cursor: pointer;
     background-color: transparent;
@@ -101,10 +177,9 @@ nav {
     outline: none;
 }
 
-<<<<<<< Updated upstream
 #reset {
     cursor: pointer;
-=======
+}
 .categories-title, .countries-title{
     letter-spacing: 1px;
     font-weight: 700;
@@ -176,7 +251,6 @@ select{
 .difference{
     font-size: 14pt;
 }
-
 /* FULLSCREEN MODAL */
 
 .fullscreen{
@@ -213,10 +287,17 @@ select{
     background-color: rgba(56, 56, 56, .5);
     transition: .4s 0s ease-in;
     visibility: hidden;
-
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     grid-template-rows: repeat(11, 1fr);
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 1000000;
+    background-color: rgba(56, 56, 56, .6);
+    display: none;
+    transition: .4s 0s ease-in;
+
 }
 
 .exit{
@@ -234,11 +315,12 @@ select{
 
 .toast{
     padding: 0px 0px !important;
-
     justify-self: stretch;
     align-self: stretch;
     grid-area: 6 / 6 / 7 / 8;
-
+    height: 10%;
+    padding: 0px 0px !important;
+    top: 45%;
 }
 
 .toast-header{
@@ -273,5 +355,5 @@ select{
     font-size: 20pt;
     visibility: hidden;
     transition: .3s 0s ease-in;
->>>>>>> Stashed changes
+
 }

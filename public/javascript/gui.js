@@ -1,26 +1,36 @@
-<<<<<<< Updated upstream
-const toggleSidebar = () => {
-    let sidebar = document.querySelector('#sidebar');
-=======
 let category = "suicide";
 let subcategory = "Suicide rate (per 100,000 population)";
 const max_z_index = "3001";
->>>>>>> Stashed changes
 
-    if (sidebar.classList.contains('side-hide')) {
-        sidebar.classList.remove('side-hide');
-        sidebar.classList.add('side-active');
+// enable tooltips
+$(function() {
+    $('[data-toggle="tooltip"]').tooltip()
+})
+
+// enable selects
+function enable_categories() {
+    document.querySelector("#selected-country").innerHTML = country;
+    document.querySelector("#category").disabled = false;
+    document.querySelector("#subcategory").disabled = false;
+    document.querySelector("#search").disabled = false;
+}
+
+// SIDEBAR
+
+// on/off sidebar
+const toggle_sidebar = () => {
+    let sidebar = document.querySelector("#sidebar");
+
+    if (sidebar.classList.contains("side-hidden")) {
+        sidebar.classList.remove("side-hidden");
+        sidebar.classList.add("side-active");
     } else {
-        sidebar.classList.remove('side-active');
-        sidebar.classList.add('side-hide');
+        sidebar.classList.remove("side-active");
+        sidebar.classList.add("side-hidden");
     }
 }
 
-<<<<<<< Updated upstream
 document.querySelector('#open-arrow').addEventListener('click', toggleSidebar);
-=======
-document.querySelector("#open-arrow").addEventListener("click", toggle_sidebar);
-
 
 // ALERTS
 const alert_html = (alert, type) => {
@@ -176,7 +186,6 @@ const search_code = (category, subcategory) => {
     }
 }
 
-
 category_select.addEventListener("change", prepare_subcategories_options);
 document.querySelector("#subcategory").addEventListener("change", choose_subcategory)
 
@@ -186,7 +195,6 @@ document.querySelector("#search").addEventListener("click", () => {
 
     if (mode == "single") {
         fetchSingleCountry(active_sub_code)
-        //point_difference()
     } else if (mode == "multi") {
         fetchMultipleCountries(active_sub_code)
     } else if (mode == "global") {
@@ -204,9 +212,9 @@ function change_type_chart() {
 document.querySelector("#chart_type").addEventListener("click", change_type_chart)
 
 // TUTORIAL MODE
-
 let is_tutorial_mode = false;
 let number_hint = 0;
+
 
 // reset css styles
 const reset_css = () => {
@@ -223,7 +231,6 @@ const reset_css = () => {
 }
 
 // reset tutorial mode, reset variables
-
 const reset_tutorial_mode = () => { 
     let toast = document.querySelector(".toast")
     is_tutorial_mode = false;
@@ -236,7 +243,6 @@ const reset_tutorial_mode = () => {
 }
 
 // turn on tutorial mode
-
 document.querySelector("#tutorial").addEventListener("click", () => {
     is_tutorial_mode = true;
     $(".toast").toast("show")
@@ -246,13 +252,12 @@ document.querySelector("#tutorial").addEventListener("click", () => {
 })
 
 // turn off tutorial mode
-
 document.querySelector(".exit").addEventListener("click", () => {
     reset_tutorial_mode()
     reset_css()
-})
-
+}
 // imitating user events
+
 
 const active_sidebar = () => {
     document.querySelector('#sidebar').classList.remove('side-hidden');
@@ -263,7 +268,6 @@ const show_modal = () => {
     document.querySelector("#search").disabled = false;
     document.querySelector("#search").click();
     document.querySelector("#search").disabled = true;
-    // document.querySelector('.modal').style.zIndex = max_z_index;
 }
 
 const close_modal = () => {
@@ -347,6 +351,8 @@ const render_toast = () => {
 
     toast.style.gridArea = active.position;
 }
->>>>>>> Stashed changes
 
-document.querySelector('#reset').addEventListener('click', resetView);
+
+document.querySelector("#next").addEventListener("click", () => {
+    next_toast()
+})

@@ -315,9 +315,7 @@ let toasts = [
     {
         'text': 'Sample country list',
         'position': '7 / 4 / 8 / 6'
-    },
-
-
+    }
 ]
 
 const countryToIso = country => {

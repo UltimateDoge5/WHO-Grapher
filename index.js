@@ -31,18 +31,31 @@ app.get("/api/:codes", (req, res) => { //Connecting to api from the server becau
 
     https.get(url, (resp) => {
         let data = '';
-        // A chunk of data has been recieved.
+        // A chunk of data has been recieved
         resp.on('data', (chunk) => {
             data += chunk;
         });
-        // The whole response has been received. Print out the result.
+        // The whole response has been received. Parse the result
         resp.on('end', () => {
-            res.json(data);
+            if (!isJson(data)) {
+                res.json({ error: "Wrong request" });
+                return false;
+            }
+            res.json(JSON.parse(data));
         });
     }).on("error", (err) => {
         throw ("Error: " + err.message);
     });
 })
+
+function isJson(json) { //Check if server response is valid JSON
+    try {
+        JSON.parse(json);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
 
 app.use('/public', express.static(path.join(__dirname, 'public'))); //Provide acces to nessesary files
 
