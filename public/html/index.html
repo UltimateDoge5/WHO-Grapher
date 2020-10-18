@@ -9,8 +9,16 @@
         <link rel="stylesheet" href="./public/style/style.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<<<<<<< Updated upstream
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css" integrity="sha512-/zs32ZEJh+/EO2N1b0PEdoA10JkdC3zJ8L5FTiQu82LR9S/rOQNfQN7U59U9BC12swNeRAz3HSzIL2vpp4fv3w==" crossorigin="anonymous" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha512-s+xg36jbIujB2S2VKfpGmlC3T5V2TF3lY48DX7u2r9XzGzgPsa6wTpOQA7J9iffvdeBN0q9tKzRxVxw1JviZPg==" crossorigin="anonymous"></script>
+=======
+        <!--BOOTSTRAP CSS-->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <!-- CHART JS -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+
+>>>>>>> Stashed changes
     </head>
 
     <body>
@@ -22,7 +30,35 @@
             </div>
         </nav>
 
+<<<<<<< Updated upstream
         <div id="sidebar" class="side-hide">
+=======
+        <nav class='mode-nav'>
+            <div>Mode:</div>
+            <button id="single" class='mode active-mode' data-toggle="tooltip" data-placement="bottom" title="Single Mode" value="single">
+                <i class="fas fa-user"></i>
+            </button>
+            <button id="multi" class='mode' data-toggle="tooltip" data-placement="bottom" title="Multi Mode" value='multi'>
+                <i class="fas fa-users"></i>
+            </button>
+            <button id="global"  class='mode' data-toggle="tooltip" data-placement="bottom" title="Global Mode" value='global'>
+                <i class="fas fa-globe-americas"></i>
+            </button>
+            <button id="tutorial" data-toggle="tooltip" data-placement="bottom" title="Tutorial Mode">
+                <i class="fas fa-chalkboard-teacher"></i>
+            </button>
+        </nav>
+
+        <div id="sidebar" class="side-hidden">
+            <div class="options">
+                <div id='categories'>
+                    <h2 class='categories-title'>Categories</h2>
+                    <select id="category" disabled>
+                    </select>
+
+                    <select id="subcategory" disabled>
+                    </select>
+>>>>>>> Stashed changes
 
             <div id='categories'></div>
 
@@ -34,7 +70,87 @@
         <div id="map"></div>
     </body>
 
+<<<<<<< Updated upstream
     <script src="./public/javascript/countries.js"></script>
+=======
+        <div id="alerts">
+           
+        </div>
+          
+          <!-- Modal -->
+          <div class="modal fade" id="chart_modal">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" >Modal title</h5>
+                  <div>
+                    <button class='fullscreen'>
+                        <span><i class="fas fa-expand"></i><span>
+                    </button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                 
+                </div>
+                <div class="modal-body">
+                    
+                    <div class="col-md-10">
+                        <canvas id="chart"></canvas>
+                    </div>
+
+                    <div class="col-md-2" class='settings'>
+                        <div>
+                            <h4>Chart Type</h4>
+                            <select id="chart_type">
+                                <option value="bar">BAR</option>
+                                <option value="line">LINE</option>
+                            </select>
+                        </div>
+
+                        <div class='difference'>
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+              </div>
+            </div>
+          </div>
+
+        <!-- TOASTS FOR TUTORIAL MODE -->
+    
+        <div class="container_toasts">
+
+            <button class='exit'>
+                <i class="fas fa-times"></i>
+            </button>
+
+            <h1 class='end_tutorial'>
+                The tutorial has been completed
+            </h1>
+
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
+                <div class="toast-header">
+                  <strong class="mr-auto">TUTORIAL MODE</strong>
+                  <button type="button" class="ml-2 mb-1" id="next">
+                    <span>NEXT</span>
+                  </button>
+                </div>
+                <div class="toast-body">
+                  
+                </div>
+              </div>
+
+          </div>
+
+    <!-- SCRIPTS -->
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script src="./public/javascript/objects.js"></script>
+>>>>>>> Stashed changes
     <script src="./public/javascript/map.js"></script>
     <script src="./public/javascript/gui.js"></script>
 

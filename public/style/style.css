@@ -21,7 +21,32 @@ nav {
     display: flex;
     justify-content: space-around;
     align-items: center;
+<<<<<<< Updated upstream
     position: fixed;
+=======
+}
+
+#reset, #add {
+    color: rgb(66, 117, 244);
+    cursor: pointer;
+    font-weight: 700;
+    margin: 0px 10px;
+    position: relative;
+    z-index: 1000000000;
+}
+
+#add{
+    visibility: hidden;
+}
+
+.mode-nav{
+    width: 20%;
+    height: 50px;
+    font-size: 16pt;
+    margin: 10px auto;
+    background-color: rgba(255, 255, 255, 0.9);
+    position: absolute;
+>>>>>>> Stashed changes
     top: 10px;
     left: 30%;
     z-index: 1;
@@ -76,6 +101,177 @@ nav {
     outline: none;
 }
 
+<<<<<<< Updated upstream
 #reset {
     cursor: pointer;
+=======
+.categories-title, .countries-title{
+    letter-spacing: 1px;
+    font-weight: 700;
+    color: #474747;
+    margin-top: 20px;
+    text-transform: uppercase;
+}
+
+select{
+    width: 80%;
+    height: 40px;
+    font-weight: 700;
+    font-size: 13pt !important;
+    border: 2px groove rgb(66, 117, 244);
+    outline: none;
+    border-radius: 10px;
+    margin: 20px 0px !important;
+    padding: 0px 10px;
+}
+
+#search{
+    width: 50%;
+    height: 40px;
+    font-weight: 700;
+    font-size: 16pt;
+    margin: 20px auto;
+    text-transform: uppercase;
+    justify-content: center;
+    color: rgb(66, 117, 244);
+}
+
+/* ALERT */
+
+.alert{
+    position: fixed !important;
+    top: 90%;
+    z-index: 2000;
+    animation: SlideUp .5s cubic-bezier(.46,.08,.39,.99);
+}
+
+/* CHART */
+
+#chart{
+    height: 100% !important;
+}
+
+/* MODAL  */
+
+.modal-dialog{
+    max-width: 1300px !important;
+    transition: .5s 0s ease-in-out;
+} 
+
+.modal-content{
+    height: 650px;  
+    transition: .5s 0s ease-in-out;
+  
+}
+
+.modal-body{
+    display: flex;
+}
+
+.settings{
+    display: flex;
+    flex-direction: column;
+}
+
+.difference{
+    font-size: 14pt;
+}
+
+/* FULLSCREEN MODAL */
+
+.fullscreen{
+    font-size: 1.1rem;
+    color: #707070;
+}
+
+.fullscreen:hover{
+    color: #000;
+}
+
+.modal-dialog__fullscreen{
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width:none !important;
+}
+
+.modal-content__fullscreen{
+    height: auto !important;
+    min-height: 100% !important;
+}
+
+/* TOASTS FOR TUTORIAL MODE */
+
+.container_toasts{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    z-index: 3000;
+    background-color: rgba(56, 56, 56, .5);
+    transition: .4s 0s ease-in;
+    visibility: hidden;
+
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(11, 1fr);
+}
+
+.exit{
+    font-size: 20pt;
+    color: rgb(56, 56, 56);
+    position:absolute;
+    left: 96%;
+    top: 2%;
+    transition: .2s 0s ease-in;
+}
+
+.exit:hover{
+    color: rgb(0, 0, 0);
+}
+
+.toast{
+    padding: 0px 0px !important;
+
+    justify-self: stretch;
+    align-self: stretch;
+    grid-area: 6 / 6 / 7 / 8;
+
+}
+
+.toast-header{
+    height: 40%;
+    display: flex;
+    align-items:center;
+}
+
+.toast-body{
+    height: 60%;
+    display: flex;
+    align-items:center;
+}
+
+#next{
+    color: rgb(66, 117, 244);
+    font-size: 12pt;
+    font-weight: 700;
+}
+
+.end_tutorial{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50% , -50%);
+    text-align: center;
+    letter-spacing: 1px;
+    font-weight: 700;
+    color: #373737;
+    text-transform: uppercase;
+    font-size: 20pt;
+    visibility: hidden;
+    transition: .3s 0s ease-in;
+>>>>>>> Stashed changes
 }

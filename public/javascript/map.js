@@ -49,8 +49,17 @@ function initMap() {
                     console.log("Please select a valid country");
                     return false;
                 }
+<<<<<<< Updated upstream
                 console.log(country)
                 document.querySelector('#selected-country').innerHTML = country
+=======
+
+                if (country.endsWith('Saudi Arabia')){
+                    let country_arr = country.split(" ");
+                    country = `${country_arr[country_arr.length - 2]} ${country_arr[country_arr.length - 1]}`;
+                }
+                enable_categories()
+>>>>>>> Stashed changes
                 geocoder.geocode({ 'address': country }, function(results, status) {
                     if (status == google.maps.GeocoderStatus.OK) {
                         map.setCenter(results[0].geometry.location);
