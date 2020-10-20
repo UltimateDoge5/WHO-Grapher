@@ -18,7 +18,7 @@ function enable_categories() {
 // SIDEBAR
 
 // on/off sidebar
-const toggle_sidebar = () => {
+const toggleSidebar = () => {
     let sidebar = document.querySelector("#sidebar");
 
     if (sidebar.classList.contains("side-hidden")) {
@@ -93,6 +93,7 @@ const items_mode = document.querySelectorAll(".mode");
 
 function change_mode() {
     mode = this.value;
+    destroyPoligons()
 
     items_mode.forEach(item => {
         item.classList.remove("active-mode");
@@ -100,15 +101,16 @@ function change_mode() {
 
     this.classList.add("active-mode")
 
-    if(mode == "multi") {
+    if (mode == "multi") {
         btn_add_country.style.visibility = "visible";
         document.querySelector("#selected-countries").style.display = "block";
         resetView();
-    }
-    else if(mode == "single"){
+    } else if (mode == "single") {
         btn_add_country.style.visibility = "hidden";
         document.querySelector("#selected-countries").style.display = "none";
         resetView();
+    } else if (mode == "global") {
+        enable_categories()
     }
 }
 
@@ -131,11 +133,11 @@ const list_item = name => {
 const update_country_list = () => {
     const list = document.querySelector(".selected-countries__list");
     const latest_country = countries.length - 1;
-    if(countries[latest_country] != undefined){
+    if (countries[latest_country] != undefined) {
         list.innerHTML += list_item(countries[latest_country], latest_country);
         document.querySelectorAll(".remove").forEach(item => item.addEventListener('click', delete_country))
-    } 
-    
+    }
+
 }
 
 btn_add_country.addEventListener("click", () => {
@@ -147,7 +149,7 @@ btn_add_country.addEventListener("click", () => {
 function delete_country() {
     const name = this.parentElement.dataset.name;
     document.querySelectorAll(".remove").forEach((item, index) => {
-        if(item.parentElement.dataset.name == name){
+        if (item.parentElement.dataset.name == name) {
             countries.splice(index, 1);
         }
     })
@@ -159,7 +161,7 @@ function delete_country() {
 
 const update_modal_header = () => {
     const modal_title = document.querySelector(".modal-title");
-    if(mode == "multi"){
+    if (mode == "multi") {
         let country_list = countries.join(", ");
         modal_title.innerHTML = `<b>Country:</b> ${country_list}, <b>Category:</b> ${category}, <b>Subcategory:</b> ${subcategory}`;
         return;
@@ -198,7 +200,7 @@ document.querySelector("#search").addEventListener("click", () => {
     } else if (mode == "multi") {
         fetchMultipleCountries(active_sub_code)
     } else if (mode == "global") {
-        //Global mode fetch function here
+        fetchGlobal(active_sub_code)
     } else {
         show_alert(`No mode named: ${mode}`, "danger")
     }
@@ -231,14 +233,14 @@ const reset_css = () => {
 }
 
 // reset tutorial mode, reset variables
-const reset_tutorial_mode = () => { 
+const reset_tutorial_mode = () => {
     let toast = document.querySelector(".toast")
     is_tutorial_mode = false;
-    
-    if(number_hint){
+
+    if (number_hint) {
         toast.style.gridArea = toasts[0].position;
     }
-    
+
     number_hint = 0;
 }
 
@@ -255,13 +257,12 @@ document.querySelector("#tutorial").addEventListener("click", () => {
 document.querySelector(".exit").addEventListener("click", () => {
     reset_tutorial_mode()
     reset_css()
-}
+})
+
 // imitating user events
-
-
 const active_sidebar = () => {
     document.querySelector('#sidebar').classList.remove('side-hidden');
-    document.querySelector('#sidebar').classList.add('side-active')
+    document.querySelector('#sidebar').classList.add('side-active');
 }
 
 const show_modal = () => {
@@ -292,7 +293,7 @@ const clear_country_list = () => {
 
 // toast service
 const next_toast = () => {
-    if(number_hint === toasts.length -1){
+    if (number_hint === toasts.length - 1) {
         document.querySelector('.end_tutorial').style.visibility = "visible";
         $(".toast").toast("hide");
         clear_country_list();
@@ -310,8 +311,8 @@ const render_toast = () => {
     toast_body.innerHTML = active.text;
     console.log(number_hint)
 
-    switch(number_hint){
-        case 0: 
+    switch (number_hint) {
+        case 0:
             return true;
             break;
         case 1:
@@ -345,7 +346,9 @@ const render_toast = () => {
         case 8:
             document.querySelector('.main-nav').style.zIndex = "1";
             document.querySelector('#sidebar').style.zIndex = max_z_index;
-            sample_country_list(0); sample_country_list(1); sample_country_list(2);
+            sample_country_list(0);
+            sample_country_list(1);
+            sample_country_list(2);
             break;
     }
 

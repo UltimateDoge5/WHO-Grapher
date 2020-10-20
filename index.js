@@ -2,6 +2,7 @@ const express = require("express"); //NODE JS server
 const app = express();
 const path = require("path");
 const https = require('https');
+const fs = require("fs");
 
 app.get("/", (req, res) => { //Send index.html
     res.sendFile(path.join(__dirname + "/public/html/index.html"));
@@ -11,10 +12,6 @@ app.get("/api/:codes", (req, res) => { //Connecting to api from the server becau
     let codes = req.params.codes.split(",")
     if (codes.length < 1) {
         res.send("Minimum one code required")
-        return false;
-    }
-    if (req.query.country == undefined) {
-        res.send("Country needed")
         return false;
     }
 
@@ -27,8 +24,13 @@ app.get("/api/:codes", (req, res) => { //Connecting to api from the server becau
         buffer += code;
     }
     url += buffer;
-    url += `.json?profile=simple&filter=COUNTRY:${req.query.country.toUpperCase()}`; //Assemble the url
 
+    url += `.json?profile=simple`; //Assemble the url
+
+    if (req.query.country != undefined) {
+        url += `&filter=COUNTRY:${req.query.country.toUpperCase()}` //Filter with country if given
+    }
+    //console.log(url)
     https.get(url, (resp) => {
         let data = '';
         // A chunk of data has been recieved
@@ -47,6 +49,11 @@ app.get("/api/:codes", (req, res) => { //Connecting to api from the server becau
         throw ("Error: " + err.message);
     });
 })
+
+app.get("/getBorders", (req, res) => {
+    const borderJson = JSON.parse(fs.readFileSync(path.join(__dirname, "/borders.json"), 'UTF-8'));
+    res.json(borderJson);
+});
 
 function isJson(json) { //Check if server response is valid JSON
     try {

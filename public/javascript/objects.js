@@ -239,17 +239,18 @@ const countriesObject = {
 const categories = {
     suicide: {
         name: "Suicide",
-        subcategories: [{
-                name: "Suicide rate (per 100,000 population)",
-                code: "SDGSUICIDE"
-            },
+        subcategories: [
+            /*{
+                            name: "Suicide rate (per 100,000 population)",
+                            code: "SDGSUICIDE"
+                        },*/
             {
                 name: "Age-standardized suicide rates (per 100 000 population)",
                 code: "MH_12"
             }
         ]
     },
-    obesity: {
+    /*obesity: {
         name: "Obesity",
         subcategories: [{
                 name: "Prevalence of obesity",
@@ -266,7 +267,7 @@ const categories = {
                 code: "NCD_BMI_PLUS2C"
             }
         ]
-    },
+    },*/
     airPollution: {
         name: "Air pollution",
         subcategories: [{
@@ -279,8 +280,7 @@ const categories = {
     }
 }
 
-let toasts = [
-    {
+let toasts = [{
         'text': 'Click on any country!',
         'position': '6 / 6 / 7 / 8'
     },
@@ -306,7 +306,7 @@ let toasts = [
     },
     {
         'text': 'You can also choose different modes!',
-        'position':'3 / 10 / 3 / 12'
+        'position': '3 / 10 / 3 / 12'
     },
     {
         'text': 'Add country to country list! (multi mode)',
