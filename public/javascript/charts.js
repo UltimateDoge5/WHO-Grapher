@@ -1,5 +1,8 @@
 let canvas = document.querySelector("canvas").getContext("2d");
 let chart;
+let parsedData;
+let legend;
+let blacklist;
 
 function createChart(data = null, type = "bar", years, title = "", country) { //Create chart with one country
     let sum = 0;
@@ -10,7 +13,7 @@ function createChart(data = null, type = "bar", years, title = "", country) { //
     if (sum == 0) {
         show_alert("Data is equal to zero and is not able to be displayed on graph", 'info')
     }
-  
+
     chart = new Chart(canvas, {
         type: type,
         data: {
@@ -37,7 +40,7 @@ function createChart(data = null, type = "bar", years, title = "", country) { //
             }
         }
     });
-  
+
     pointDifference()
 }
 
@@ -62,7 +65,7 @@ function createMultiChart(datasets, type = "bar", years, title = "") { //Create 
             }
         }
     });
-  
+
     pointDifference()
 }
 
@@ -121,10 +124,60 @@ function getDatasets(data, countries) { //Parse the data of multiple countries a
     return result;
 }
 
+function getGlobalData(data, years) {
+    function parserAlgorithm(object) {
+        if (object.dim.SEX == undefined || object.dim.SEX == "Both sexes" || object.dim.UNREGION != undefined) { //If object is valid for chart
+
+            if (object.dim.ENVCAUSE != undefined) {
+                //If subcatogory is devided by extra causes, only add to chart total amount of deaths
+                if (object.dim.ENVCAUSE == "Total" || object.dim.ENVCAUSE == "Lower respiratory infections") {
+                    return parseFloat(object.Value);
+                }
+            } else {
+                return parseFloat(object.Value);
+            }
+        } else {
+            return false;
+        }
+        return false;
+    }
+
+    let output = {};
+    /*for (year of years) { //Prepare years arrays
+        output[year] = [];
+    }*/
+
+    for (object of data.fact) {
+        let value = parserAlgorithm(object)
+        if (value === false || object.dim.COUNTRY == undefined) {
+            continue;
+        }
+        if (Array.isArray(output[object.dim.YEAR]) == false) {
+            output[object.dim.YEAR] = [];
+        }
+        output[object.dim.YEAR].push({ name: object.dim.COUNTRY, value: value });
+
+    }
+    return output;
+}
+
 function getMultipleYears(data) {
+    console.log(data)
     let years = [];
     for (country in data) {
         for (object of data[country].fact) {
+            if (!years.includes(object.dim.YEAR)) {
+                years.push(object.dim.YEAR);
+            }
+        }
+    }
+    return years;
+}
+
+function getYearsForGlobal(data) {
+    let years = [];
+    for (country in data) {
+        for (object of data.fact) {
             if (!years.includes(object.dim.YEAR)) {
                 years.push(object.dim.YEAR);
             }
@@ -144,20 +197,19 @@ function getYears(data) {
 }
 
 const pointDifference = () => {
-    const roundToTwo = num => +(Math.round(num + "e+2")  + "e-2");
-    for(let country of chart.data.datasets){
+    const roundToTwo = num => +(Math.round(num + "e+2") + "e-2");
+    for (let country of chart.data.datasets) {
         const data = country.data;
         const difference = data[data.length - 1] - data[0];
         const between = [chart.data.labels[0], chart.data.labels[chart.data.labels.length - 1]];
         const percent = Math.abs(roundToTwo(difference / data[0] * 100));
-        if (difference > 0){ // increased
+        if (difference > 0) { // increased
             document.querySelector('.difference').innerHTML += `<p>For ${country.label}, between years <b>${between[0]}</b> and <b>${between[1]}</b> ${subcategory} increased by <b>${percent}</b>%</p>`;
-        }
-        else{ // decreased
+        } else { // decreased
             document.querySelector('.difference').innerHTML += `<p>For ${country.label}, between years <b>${between[0]}</b> and <b>${between[1]}</b> ${subcategory} decreased by <b>${percent}</b>%</p>`;
         }
     }
-    
+
 }
 
 function renderChart(data, country) {
@@ -208,6 +260,39 @@ function renderMultiChart(data, countries) {
     }
 }
 
+function fetchGlobal(dataCode) {
+    getData(`/api/${dataCode}`) //Fetch only one country for single-country chart
+        .then(response => {
+            renderGlobalMode(response);
+        })
+        .catch(err => console.error(err))
+}
+
+function renderGlobalMode(data) {
+
+    getBorders();
+    let minMax = getMinMax(data)
+    let years = getYearsForGlobal(data)
+    parsedData = (getGlobalData(data, years), minMax);
+    legend = assignToLegend(generateCompartment(minMax, 5), getGlobalData(data, years), ["#376467", "#fcba03", "#ff0fa7", "#ffffff", "#3bf71e"]); //@kacper  generacja kolorów
+    blacklist = JSON.stringify(checkBorders(legend, borders));
+    let keys = Object.keys(legend[0].countries);
+    drawBorders(legend, borders, blacklist, keys[keys.length - 1]);
+}
+
+function getBorders() {
+    borders = JSON.parse(localStorage.getItem("borders"));
+    if (borders == null) {
+        getData(`/getBorders`) //Fetch only one country for single-country chart
+            .then(response => {
+                borders = JSON.parse(response);
+                localStorage.setItem("borders", JSON.stringify(response));
+                return true;
+            })
+            .catch(err => console.error(err))
+    }
+}
+
 function fetchSingleCountry(dataCode) { //Wrapper for data loading
     isoCode = countryToIso(country);
     getData(`/api/${dataCode}?country=${isoCode}`) //Fetch only one country for single-country chart
@@ -249,15 +334,83 @@ function GenerateColors(data) {
         border: []
     }
 
-    for(let i = 0; i < data.length; i++){
+    for (let i = 0; i < data.length; i++) {
         let rgb = []
-        for(let j = 0; j < 3; j++){
+        for (let j = 0; j < 3; j++) {
             let random = Math.floor(Math.random() * (256 - 100)) + 100; // min = 150 || max = 256
             rgb.push(random)
         }
-        const to_rgba = (aplha) => `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${aplha})` 
+        const to_rgba = (aplha) => `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${aplha})`
         colors['background'].push(to_rgba('0.6'));
         colors['border'].push(to_rgba('1'));
     }
     return colors
+}
+
+function getCountryNames(data) {
+    let countries = [];
+    for (object of data.fact) {
+        if (!countries.includes(object.dim.COUNTRY)) {
+            countries.push(object.dim.COUNTRY);
+        }
+    }
+    return countries;
+}
+
+function assignToLegend(compartments, data, colors) {
+    let legend = [];
+    let i = 0;
+    for (i = 0; i < compartments.length; i++) {
+        legend.push({ color: colors[i], compartment: compartments[0], countries: {} })
+    }
+    i = 0;
+    console.log(compartments, data, legend)
+    for (year in data) {
+        for (country of data[year]) {
+            for (compartment of compartments) {
+                //i++;
+                if (country.value >= compartment.from && country.value <= compartment.to) {
+                    let index = compartments.indexOf(compartment);
+                    if (legend[index].countries[year] == undefined) {
+                        legend[index].countries[year] = [];
+                    }
+                    legend[index].countries[year].push(country)
+                }
+            }
+        }
+    }
+    //console.log(i)
+    return legend;
+}
+
+function generateCompartment(minMax, denominator = 5) {
+    if (denominator < 2) {
+        denominator = 2;
+    }
+    let compartment = [];
+    let base = (minMax.max + 1) - (minMax.min + 1);
+    let nominator = base / denominator;
+    let min = minMax.min;
+    let max = nominator;
+
+    for (let i = 0; i < denominator; i++) {
+        compartment.push({ from: min, to: max })
+        min = max + 1;
+        max += nominator;
+    }
+    return compartment;
+}
+
+function getMinMax(data) {
+    let min = parseFloat(data.fact[0].Value);
+    let max = parseFloat(data.fact[0].Value);
+
+    for (object of data.fact) {
+        if (isNaN(parseFloat(object.Value))) {
+            continue;
+        }
+        min = Math.min(min, parseFloat(object.Value));
+        max = Math.max(max, parseFloat(object.Value));
+    }
+    return { min: min, max: max };
 }
