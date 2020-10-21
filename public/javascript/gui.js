@@ -7,7 +7,7 @@ $(function() {
     $('[data-toggle="tooltip"]').tooltip()
 })
 
-// enable selects
+// enable selects and button
 function enable_categories() {
     document.querySelector("#selected-country").innerHTML = country;
     document.querySelector("#category").disabled = false;
@@ -18,7 +18,7 @@ function enable_categories() {
 // SIDEBAR
 
 // on/off sidebar
-const toggleSidebar = () => {
+const toggle_sidebar = () => {
     let sidebar = document.querySelector("#sidebar");
 
     if (sidebar.classList.contains("side-hidden")) {
@@ -30,7 +30,7 @@ const toggleSidebar = () => {
     }
 }
 
-document.querySelector('#open-arrow').addEventListener('click', toggleSidebar);
+document.querySelector('#open-arrow').addEventListener('click', toggle_sidebar);
 
 // ALERTS
 const alert_html = (alert, type) => {
@@ -101,22 +101,78 @@ function change_mode() {
 
     this.classList.add("active-mode")
 
-    if (mode == "multi") {
+    if(mode == "multi") {
         btn_add_country.style.visibility = "visible";
         document.querySelector("#selected-countries").style.display = "block";
+        document.querySelector('#years-range').style.display = 'none';
+        document.querySelector('#legend').style.display = 'none'
         resetView();
-    } else if (mode == "single") {
+    }
+    else if(mode == "single"){
         btn_add_country.style.visibility = "hidden";
         document.querySelector("#selected-countries").style.display = "none";
+        document.querySelector('#years-range').style.display = 'none';
+        document.querySelector('#legend').style.display = 'none'
         resetView();
-    } else if (mode == "global") {
-        enable_categories()
+    }
+    else if (mode == "global") {
+        btn_add_country.style.visibility = "hidden";
+        document.querySelector("#selected-countries").style.display = "none";
+        document.querySelector('#legend').style.display = 'block';
+        document.querySelector('#years-range').style.display = 'block';
+        resetView();
+        enable_categories();
     }
 }
 
 items_mode.forEach(item => {
     item.addEventListener("click", change_mode);
 })
+
+// GLOBAL MODE
+
+let active_years;
+
+const legends_colors = () => {
+    const colors = [document.querySelector('#color1').value, document.querySelector('#color2').value];
+
+    const gradient = generateGradient(colors[0], colors[1], 5);
+    const legend_list = document.querySelector('.legend-list');
+    legend_list.innerHTML = "";
+
+    for(let i = 0; i < gradient.length; i++){
+        legend_list.innerHTML += `<li class='legend-list__item'><div class="color" style='background-color: ${gradient[i]}'></div><div class='compartments'></div></li>`;
+    }
+
+    return gradient
+}
+
+document.querySelector('#generate').addEventListener('click',  legends_colors);
+
+function change_year(){
+    drawBorders(legend, borders, blacklist, active_years[this.value]);
+}
+
+document.querySelector('#years').addEventListener('change', change_year)
+
+const years_list = (years) => { // param Object.keys()
+    active_years = years;
+    const years_list = document.querySelector('#years__list'); years_list.innerHTML = "";
+    const years_range = document.querySelector('#years');
+    years_range.min = 0; years_range.max = years.length - 1; years_range.step = 1; years_range.value = years.length - 1;
+
+    for(let year of years){
+        years_list.innerHTML += `<option value="${year}" label="${year}">`
+    }
+} 
+
+const legend_compartments = (compartments) => {
+    const compartments_list = document.querySelectorAll('.compartments');
+
+    for(let i = 0; i < compartments.length; i++){
+        compartments_list[i].innerHTML = `${compartments[i]['from'].toFixed(2)} - ${compartments[i]['to'].toFixed(2)}`
+    }
+}
 
 
 // MULTI MODE
@@ -133,11 +189,11 @@ const list_item = name => {
 const update_country_list = () => {
     const list = document.querySelector(".selected-countries__list");
     const latest_country = countries.length - 1;
-    if (countries[latest_country] != undefined) {
+    if(countries[latest_country] != undefined){
         list.innerHTML += list_item(countries[latest_country], latest_country);
         document.querySelectorAll(".remove").forEach(item => item.addEventListener('click', delete_country))
-    }
-
+    } 
+    
 }
 
 btn_add_country.addEventListener("click", () => {
@@ -149,7 +205,7 @@ btn_add_country.addEventListener("click", () => {
 function delete_country() {
     const name = this.parentElement.dataset.name;
     document.querySelectorAll(".remove").forEach((item, index) => {
-        if (item.parentElement.dataset.name == name) {
+        if(item.parentElement.dataset.name == name){
             countries.splice(index, 1);
         }
     })
@@ -161,7 +217,7 @@ function delete_country() {
 
 const update_modal_header = () => {
     const modal_title = document.querySelector(".modal-title");
-    if (mode == "multi") {
+    if(mode == "multi"){
         let country_list = countries.join(", ");
         modal_title.innerHTML = `<b>Country:</b> ${country_list}, <b>Category:</b> ${category}, <b>Subcategory:</b> ${subcategory}`;
         return;
@@ -233,14 +289,14 @@ const reset_css = () => {
 }
 
 // reset tutorial mode, reset variables
-const reset_tutorial_mode = () => {
+const reset_tutorial_mode = () => { 
     let toast = document.querySelector(".toast")
     is_tutorial_mode = false;
-
-    if (number_hint) {
+    
+    if(number_hint){
         toast.style.gridArea = toasts[0].position;
     }
-
+    
     number_hint = 0;
 }
 
@@ -258,11 +314,11 @@ document.querySelector(".exit").addEventListener("click", () => {
     reset_tutorial_mode()
     reset_css()
 })
-
 // imitating user events
+
 const active_sidebar = () => {
     document.querySelector('#sidebar').classList.remove('side-hidden');
-    document.querySelector('#sidebar').classList.add('side-active');
+    document.querySelector('#sidebar').classList.add('side-active')
 }
 
 const show_modal = () => {
@@ -293,7 +349,7 @@ const clear_country_list = () => {
 
 // toast service
 const next_toast = () => {
-    if (number_hint === toasts.length - 1) {
+    if(number_hint === toasts.length -1){
         document.querySelector('.end_tutorial').style.visibility = "visible";
         $(".toast").toast("hide");
         clear_country_list();
@@ -311,8 +367,8 @@ const render_toast = () => {
     toast_body.innerHTML = active.text;
     console.log(number_hint)
 
-    switch (number_hint) {
-        case 0:
+    switch(number_hint){
+        case 0: 
             return true;
             break;
         case 1:
@@ -346,9 +402,7 @@ const render_toast = () => {
         case 8:
             document.querySelector('.main-nav').style.zIndex = "1";
             document.querySelector('#sidebar').style.zIndex = max_z_index;
-            sample_country_list(0);
-            sample_country_list(1);
-            sample_country_list(2);
+            sample_country_list(0); sample_country_list(1); sample_country_list(2);
             break;
     }
 

@@ -17,7 +17,6 @@
         <!-- CHART JS -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css" integrity="sha512-/zs32ZEJh+/EO2N1b0PEdoA10JkdC3zJ8L5FTiQu82LR9S/rOQNfQN7U59U9BC12swNeRAz3HSzIL2vpp4fv3w==" crossorigin="anonymous" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha512-s+xg36jbIujB2S2VKfpGmlC3T5V2TF3lY48DX7u2r9XzGzgPsa6wTpOQA7J9iffvdeBN0q9tKzRxVxw1JviZPg==" crossorigin="anonymous"></script>
-        <!-- FLAGS -->
     </head>
 
     <body>
@@ -36,7 +35,7 @@
         </nav>
       
         <nav class='mode-nav'>
-            <div>Mode:</div>
+            <div class='caption-mode'>Mode:</div>
             <button id="single" class='mode active-mode' data-toggle="tooltip" data-placement="bottom" title="Single Mode" value="single">
                 <i class="fas fa-user"></i>
             </button>
@@ -62,7 +61,7 @@
                     </select>
 
 
-                    <button id='search' data-toggle="modal" data-target="#chart_modal" disabled>search</button>
+                    <button id='search' data-toggle="modal" data-target="#chart_modal" disabled>view</button>
 
                 </div>
 
@@ -71,12 +70,38 @@
                     <ul class='selected-countries__list'>
                     </ul>
                 </div>
+
+                <div id="legend">
+                    <h2 class='legend-title'>Legend</h2>
+
+                    <div class="inputs-color">
+                        <input type="color" id="color1" name="color1" value="#d10000">
+
+                        <input type="color" id="color2" name="color2" value="#309100">
+                    </div>
+                   
+
+                <button id='generate'>generate</button>
+
+                    <ul class='legend-list'>
+                        
+                    </ul>
+                </div>
                 
             </div>
 
             <button>
                 <span id="open-arrow">&rsaquo;</span>
             </button>
+        </div>
+
+        <div id="years-range">
+                <div id="range">
+                  <input type="range" class="form-control-range" id="years" list="years__list">
+                  
+                  <datalist id="years__list"></datalist>
+                  
+                </div>
         </div>
 
         <div id="map"></div>
@@ -155,8 +180,9 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
     <script src="./public/javascript/objects.js"></script>
-    <script src="./public/javascript/map.js"></script>
+    <script src="./public/javascript/gradient.js"></script>
     <script src="./public/javascript/gui.js"></script>
+    <script src="./public/javascript/map.js"></script>
     <script src="./public/javascript/charts.js"></script>
 </body>
 </html>

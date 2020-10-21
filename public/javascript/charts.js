@@ -272,9 +272,10 @@ function renderGlobalMode(data) {
 
     getBorders();
     let minMax = getMinMax(data)
-    let years = getYearsForGlobal(data)
+    let years = getYearsForGlobal(data);
+    years_list(years); // generate caption for years range
     parsedData = (getGlobalData(data, years), minMax);
-    legend = assignToLegend(generateCompartment(minMax, 5), getGlobalData(data, years), ["#376467", "#fcba03", "#ff0fa7", "#ffffff", "#3bf71e"]); //@kacper  generacja kolorów
+    legend = assignToLegend(generateCompartment(minMax, 5), getGlobalData(data, years), legends_colors()); //@kacper  generacja kolorów
     blacklist = JSON.stringify(checkBorders(legend, borders));
     let keys = Object.keys(legend[0].countries);
     drawBorders(legend, borders, blacklist, keys[keys.length - 1]);
@@ -283,10 +284,11 @@ function renderGlobalMode(data) {
 function getBorders() {
     borders = JSON.parse(localStorage.getItem("borders"));
     if (borders == null) {
+        console.log('ffdfd')
         getData(`/getBorders`) //Fetch only one country for single-country chart
-            .then(response => {
-                borders = JSON.parse(response);
+        .then(response => {
                 localStorage.setItem("borders", JSON.stringify(response));
+                borders = response;
                 return true;
             })
             .catch(err => console.error(err))
@@ -365,6 +367,7 @@ function assignToLegend(compartments, data, colors) {
     }
     i = 0;
     console.log(compartments, data, legend)
+    legend_compartments(compartments)
     for (year in data) {
         for (country of data[year]) {
             for (compartment of compartments) {
