@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>WHO Grapher</title>
+        <!-- POLYFILL -->
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+        <!-- GOOGLE MAPS -->
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDMlOAWV0hPByaFcpfarjqMs6-iZImWp9A&callback=initMap&libraries=&v=weekly&language=pl" defer></script>
+        <!--CSS FILE-->
+        <link rel="stylesheet" href="../public/style/style.css">
+        <!--FONT AWESOME-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+        <!--GOOGLE FONTS-->
+        <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+        <!--BOOTSTRAP CSS-->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <!-- CHART JS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css" integrity="sha512-/zs32ZEJh+/EO2N1b0PEdoA10JkdC3zJ8L5FTiQu82LR9S/rOQNfQN7U59U9BC12swNeRAz3HSzIL2vpp4fv3w==" crossorigin="anonymous" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha512-s+xg36jbIujB2S2VKfpGmlC3T5V2TF3lY48DX7u2r9XzGzgPsa6wTpOQA7J9iffvdeBN0q9tKzRxVxw1JviZPg==" crossorigin="anonymous"></script>
+    </head>
+
+    <body>
+        <div id="no-cursor"></div>
+
+        <div id="languages">
+            <a href='/en'>
+                <div class="en"></div>
+            </a>
+
+            <a href='/pl'>
+                <div class="pl"></div>
+            </a>
+
+        </div>
+
+        <nav class='main-nav'>
+            <div>Wybrany kraj: <b id='selected-country'>Brak</b></div>
+
+            <div>
+                <button id='add'>
+                    <span><i class="fas fa-plus"></i> DODAJ</span>
+                </button>
+                <button id='reset'>
+                    <span><i class="fas fa-undo"></i> RESET</span>
+                </button>
+                <button id='hidden-gui' data-toggle="tooltip" data-placement="bottom" title="Hide GUI">
+                    <i class="far fa-eye-slash"></i>
+                </button>
+            </div>
+        </nav>
+
+        <nav class='mode-nav'>
+            <div class='caption-mode'>Tryb:</div>
+            <button id="single" class='mode active-mode' data-toggle="tooltip" data-placement="bottom" title="Tryb pojedyńczy" value="single">
+                <i class="fas fa-user"></i>
+            </button>
+            <button id="multi" class='mode' data-toggle="tooltip" data-placement="bottom" title="Tryb wielu" value='multi'>
+                <i class="fas fa-users"></i>
+            </button>
+            <button id="global" class='mode' data-toggle="tooltip" data-placement="bottom" title="Tryb globalny" value='global'>
+                <i class="fas fa-globe-americas"></i>
+            </button>
+            <button id="tutorial" data-toggle="tooltip" data-placement="bottom" title="Samouczek">
+                <i class="fas fa-chalkboard-teacher"></i>
+            </button>
+        </nav>
+
+        <div id="sidebar" class="side-hidden">
+            <div class="options">
+                <div id='categories'>
+                    <h2 class='categories-title'>Kategorie</h2>
+                    <select id="category" disabled>
+                    </select>
+
+                    <select id="subcategory" disabled>
+                    </select>
+
+                    <button id='search' disabled>Wyświetl</button>
+
+                </div>
+
+                <div id='selected-countries'>
+                    <h2 class='countries-title'>Kraje</h2>
+                    <ul class='selected-countries__list'>
+                    </ul>
+                </div>
+
+                <div id="legend">
+                    <h2 class='legend-title'>Legenda</h2>
+
+                    <div class="inputs-color">
+                        <input type="color" id="color1" name="color1" value="#d10000">
+
+                        <input type="color" id="color2" name="color2" value="#309100">
+                    </div>
+
+                    <ul class='legend-list'>
+
+                    </ul>
+                </div>
+
+            </div>
+
+            <button>
+                <span id="open-arrow">&rsaquo;</span>
+            </button>
+        </div>
+
+        <div id="years-range">
+            <button class='play'>
+                <i class="fas fa-play"></i>
+            </button>
+
+            <div id="range">
+                <form oninput="year.value=active_years[years.value]">
+                    <input type="range" class="form-control-range" id="years" name='years' list="years__list">
+                    <output for="years" name='year' id='output'></output>
+
+                    <datalist id="years__list"></datalist>
+                </form>
+            </div>
+        </div>
+
+        <!-- MAP -->
+        <div id="map"></div>
+
+        <!-- ALERTS -->
+
+        <div id="alerts"></div>
+
+        <div class="alert-danger" role="alert" id="global_alert">
+            <h4 class="alert-heading">Uwaga!</h4>
+            <p>Tryb globalny ładuje duże ilości danych i je przetwarza! To może spowodować problemy w przypadku starszych komputerów i słabego łącza internetowego.</p>
+            <hr>
+            <div class="mb-0 alert_btns">
+                <button class='alert_btn' id='cancel-btn'>
+                    Anuluj
+                </button>
+                <button class='alert_btn' id='accept-btn'>
+                    Kontynuuj
+                </button>
+            </div>
+        </div>
+
+        <!-- MODAL -->
+        <div class="modal fade" id="chart_modal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Modal title</h5>
+
+                        <div>
+                            <button class='fullscreen'>
+                        <span><i class="fas fa-expand"></i><span>
+                    </button>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                        </div>
+
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="col-md-10">
+                            <canvas id="chart"></canvas>
+                        </div>
+
+                        <div class="col-md-2" class='settings'>
+                            <div>
+                                <h4>Typ wykresu</h4>
+                                <select id="chart_type">
+                                <option value="bar" selected>Słupkowy</option>
+                                <option value="line">Liniowy</option>
+                            </select>
+                            </div>
+                            <div class='difference'></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOASTS FOR TUTORIAL MODE -->
+
+        <div class="container_toasts">
+
+            <button class='exit'>
+                <i class="fas fa-times"></i>
+            </button>
+
+
+            <h1 class='end_tutorial'>
+                Samouczek został ukończony
+            </h1>
+
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
+                <div class="toast-header">
+                    <strong class="mr-auto">Samouczek</strong>
+                    <button type="button" class="ml-2 mb-1" id="next">
+                    <span>Dalej</span>
+
+                  </button>
+                </div>
+                <div class="toast-body">
+
+                </div>
+            </div>
+
+        </div>
+        <!-- SCRIPTS -->
+
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+        <script src="../public/javascript/objects.js"></script>
+        <script src="../public/javascript/gradient.js"></script>
+        <script src="../public/javascript/gui.js"></script>
+        <script src="../public/javascript/map.js"></script>
+        <script src="../public/javascript/charts.js"></script>
+    </body>
+
+</html>

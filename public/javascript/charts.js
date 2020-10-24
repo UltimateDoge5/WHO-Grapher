@@ -6,12 +6,13 @@ let blacklist;
 
 function createChart(data = null, type = "bar", years, title = "", country) { //Create chart with one country
     let sum = 0;
-    let colors = GenerateColors(data);
+    let colors = GenerateColors([0]);
     for (index of data) {
         sum += index;
     }
     if (sum == 0) {
-        show_alert("Data is equal to zero and is not able to be displayed on graph", 'info')
+        show_alert(languageText[lang].dataZero, 'info')
+        return false;
     }
 
     chart = new Chart(canvas, {
@@ -19,14 +20,16 @@ function createChart(data = null, type = "bar", years, title = "", country) { //
         data: {
             labels: years,
             datasets: [{
+                fill: false,
                 label: country,
                 data: data,
-                backgroundColor: colors.background,
-                borderColor: colors.border,
+                backgroundColor: colors.background[0],
+                borderColor: colors.border[0],
                 borderWidth: 1
             }]
         },
         options: {
+            responsive: true,
             title: {
                 display: true,
                 text: title
@@ -40,18 +43,50 @@ function createChart(data = null, type = "bar", years, title = "", country) { //
             }
         }
     });
-
+    $('#chart_modal').modal('show');
     pointDifference()
 }
 
 function createMultiChart(datasets, type = "bar", years, title = "") { //Create chart with multiple countries
+    let emptyCountries = [];
+    let i = 0;
+    for (country of datasets) {
+        let sum = 0.0;
+        for (index of country.data) {
+            sum += index;
+        }
+        if (sum == 0) {
+            emptyCountries.push(country.label)
+            datasets.splice(i, 1)
+        }
+        i++;
+    }
+    if (emptyCountries.length > 0) {
+        let string = languageText[lang].dataZeroMulti[0];
+        let countriesBuffer = "";
+        for (country of emptyCountries) {
+            if (countriesBuffer != "") {
+                string += ", ";
+            }
+            string += country;
+        }
+        string += languageText[lang].dataZeroMulti[1];
+        show_alert(string, "warning");
+    }
+
+    if (datasets.length == 0) {
+        return false;
+    }
+
+
     chart = new Chart(canvas, {
         type: type,
         data: {
             labels: years,
-            datasets: datasets
+            datasets: datasets,
         },
         options: {
+            responsive: true,
             title: {
                 display: true,
                 text: title
@@ -65,13 +100,16 @@ function createMultiChart(datasets, type = "bar", years, title = "") { //Create 
             }
         }
     });
-
+    $('#chart_modal').modal('show');
     pointDifference()
 }
 
 function getDataset(data) { //Parse the data to human readable & chart compatible format
     let dataset = {};
     for (object of data.fact) {
+        if (object.Value == "No data") {
+            return false;
+        }
         if (object.dim.SEX == undefined || object.dim.SEX == "Both sexes" && dataset[object.dim.YEAR] == undefined) { //If object is valid for chart
             if (isNaN(parseFloat(object.Value))) {
                 if (object.dim.ENVCAUSE != undefined) {
@@ -116,7 +154,8 @@ function getDatasets(data, countries) { //Parse the data of multiple countries a
             data: parsedCountry,
             backgroundColor: colors['background'][0], //Implement generation of random RGB colors for every country
             borderColor: colors['border'][0],
-            borderWidth: 1
+            borderWidth: 1,
+            fill: false
         };
         i++;
         result.push(dataset)
@@ -124,7 +163,7 @@ function getDatasets(data, countries) { //Parse the data of multiple countries a
     return result;
 }
 
-function getGlobalData(data, years) {
+function getGlobalData(data) {
     function parserAlgorithm(object) {
         if (object.dim.SEX == undefined || object.dim.SEX == "Both sexes" || object.dim.UNREGION != undefined) { //If object is valid for chart
 
@@ -143,9 +182,6 @@ function getGlobalData(data, years) {
     }
 
     let output = {};
-    /*for (year of years) { //Prepare years arrays
-        output[year] = [];
-    }*/
 
     for (object of data.fact) {
         let value = parserAlgorithm(object)
@@ -162,7 +198,6 @@ function getGlobalData(data, years) {
 }
 
 function getMultipleYears(data) {
-    console.log(data)
     let years = [];
     for (country in data) {
         for (object of data[country].fact) {
@@ -204,9 +239,9 @@ const pointDifference = () => {
         const between = [chart.data.labels[0], chart.data.labels[chart.data.labels.length - 1]];
         const percent = Math.abs(roundToTwo(difference / data[0] * 100));
         if (difference > 0) { // increased
-            document.querySelector('.difference').innerHTML += `<p>For <b>${country.label}</b>, between years <b>${between[0]}</b> and <b>${between[1]}</b> ${subcategory} increased by <b>${percent}</b>%</p>`;
+            document.querySelector('.difference').innerHTML += languageText[lang].difference.increased(between[0], between[1], country.label, subcategory, percent);
         } else { // decreased
-            document.querySelector('.difference').innerHTML += `<p>For <b>${country.label}</b>, between years <b>${between[0]}</b> and <b>${between[1]}</b> ${subcategory} decreased by <b>${percent}</b>%</p>`;
+            document.querySelector('.difference').innerHTML += languageText[lang].difference.decreased(between[0], between[1], country.label, subcategory, percent)
         }
     }
 
@@ -215,22 +250,25 @@ const pointDifference = () => {
 function renderChart(data, country) {
 
     document.querySelector('.difference').innerHTML = ""; // remove information about point difference
-    if (data.error != undefined) {
-        show_alert("Data was not fetched succesfully", 'warning');
-        return false;
-    }
-    if (data.fact.length == 0) {
-        show_alert("No data avaiable for this country", 'info');
-        chart.destroy();
-        chart = undefined;
+    if (data.error != undefined) { //If server returned an error
+        show_alert(languageText[lang].fetchError, 'danger');
         return false;
     }
 
-    if (chart == undefined) {
+    if (data.fact.length == 0) { //If no data for given country is present
+        show_alert(languageText[lang].noData, 'info');
+        return false;
+    }
+
+    if (chart == undefined) { //If chart does not exist create it
         const years = getYears(data)
         const dataset = getDataset(data);
+        if (dataset == false) { //No data
+            show_alert(languageText[lang].noData, "info")
+            return false;
+        }
         createChart(dataset, "bar", years, data.fact[0].dim.GHO, country);
-    } else {
+    } else { //If chart does exist destroy it and then create it
         chart.destroy();
         chart = undefined;
         renderChart(data, country);
@@ -241,19 +279,25 @@ function renderMultiChart(data, countries) {
     document.querySelector('.difference').innerHTML = ""; // remove information about point difference
 
     if (countries.length < 2) {
-        show_alert("Please select 2 or more countries", "warning")
+        show_alert(languageText[lang].minCountry, "warning")
         return false;
     }
     if (data.error != undefined) {
-        show_alert("Data was not fetched succesfully", 'warning');
+        show_alert(languageText[lang].fetchError, 'warning');
         return false;
     }
+    /*for (country in data) {
+        if (data[country].fact.length == 0) {
+            console.error("no data ", country)
 
-    if (chart == undefined) {
+        }
+    }*/
+
+    if (chart == undefined) { //If chart does exist destroy it and then create it
         const years = getMultipleYears(data);
         const dataset = getDatasets(data, countries);
         createMultiChart(dataset, "bar", years);
-    } else {
+    } else { //If chart does exist destroy it and then create it
         chart.destroy();
         chart = undefined;
         renderMultiChart(data, countries);
@@ -269,33 +313,38 @@ function fetchGlobal(dataCode) {
 }
 
 function renderGlobalMode(data) {
-
-    getBorders();
-    let minMax = getMinMax(data)
-    let years = getYearsForGlobal(data);
-    years_list(years); // generate caption for years range
-    parsedData = (getGlobalData(data, years), minMax);
-    legend = assignToLegend(generateCompartment(minMax, 5), getGlobalData(data, years), legend_color_list(legends_colors()));
-    legend_compartments(legend)
-    blacklist = JSON.stringify(checkBorders(legend, borders));
-    let keys = Object.keys(legend[0].countries);
-    drawBorders(legend, borders, blacklist, keys[keys.length - 1]);
+    getBorders().then(result => { //Wait for borders to load (if not cashed in borwser will be fetched from server)
+            borders = result;
+            let minMax = getMinMax(data)
+            let years = getYearsForGlobal(data);
+            years_list(years); // generate caption for years range
+            parsedData = (getGlobalData(data, years), minMax);
+            legend = assignToLegend(generateCompartment(minMax, 5), getGlobalData(data, years), legend_color_list(legends_colors())); //Create the legend
+            legend_compartments(legend)
+            blacklist = checkBorders(legend, borders); //Create blacklist for countries of which borders we don't have
+            let keys = Object.keys(legend[0].countries);
+            drawBorders(legend, borders, blacklist, keys[keys.length - 1], { enabled: true, color: "#5e5e5e" });
+        })
+        .catch(err => console.error(err))
 }
 
-function getBorders() {
-    borders = JSON.parse(localStorage.getItem("borders"));
-    if (borders == null) {
-        getData(`/getBorders`) //Fetch only one country for single-country chart
-        .then(response => {
-                localStorage.setItem("borders", JSON.stringify(response));
-                borders = response;
-                return true;
-            })
-            .catch(err => console.error(err))
-    }
+function getBorders() { //Get countries borders
+    return new Promise(async function(resolve, reject) {
+        let borders = JSON.parse(localStorage.getItem("borders"));
+        if (borders == null) {
+            getData(`/getBorders`) //Fetch only one country for single-country chart
+                .then(response => {
+                    localStorage.setItem("borders", JSON.stringify(response));
+                    resolve(response);
+                })
+                .catch(err => reject(err))
+        } else {
+            resolve(borders)
+        }
+    })
 }
 
-function fetchSingleCountry(dataCode) { //Wrapper for data loading
+function fetchSingleCountry(dataCode) { //Wrapper for data loading (single chart)
     isoCode = countryToIso(country);
     getData(`/api/${dataCode}?country=${isoCode}`) //Fetch only one country for single-country chart
         .then(response => {
@@ -305,7 +354,7 @@ function fetchSingleCountry(dataCode) { //Wrapper for data loading
         .catch(err => console.error(err))
 }
 
-function fetchMultipleCountries(dataCode) { //Wrapper for data loading
+function fetchMultipleCountries(dataCode) { //Wrapper for data loading (multi chart)
     isoCodes = countriesToIso(countries);
     fetchLoop(dataCode, isoCodes)
         .then(result => renderMultiChart(result, countries))
@@ -330,7 +379,7 @@ function fetchLoop(code, isoCodes) { //Queue fetch as many countries for fetch a
     })
 }
 
-function GenerateColors(data) {
+function GenerateColors(data) { //Generate random colors for countries in multi mode
     let colors = {
         background: [],
         border: []
@@ -346,7 +395,7 @@ function GenerateColors(data) {
         colors['background'].push(to_rgba('0.6'));
         colors['border'].push(to_rgba('1'));
     }
-    return colors
+    return colors;
 }
 
 function getCountryNames(data) {
@@ -361,12 +410,9 @@ function getCountryNames(data) {
 
 function assignToLegend(compartments, data, colors) {
     let legend = [];
-    let i = 0;
     for (i = 0; i < compartments.length; i++) {
-        legend.push({ color: colors[i], compartment: compartments[0], countries: {} })
+        legend.push({ color: colors[i], compartment: compartments[i], countries: {} })
     }
-    i = 0;
-    console.log(compartments, data, legend)
     for (year in data) {
         for (country of data[year]) {
             for (compartment of compartments) {
@@ -381,7 +427,6 @@ function assignToLegend(compartments, data, colors) {
             }
         }
     }
-    //console.log(i)
     return legend;
 }
 

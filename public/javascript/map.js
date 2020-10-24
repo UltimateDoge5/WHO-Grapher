@@ -1,4 +1,4 @@
-const key = "AIzaSyDMlOAWV0hPByaFcpfarjqMs6-iZImWp9A"
+const key = "AIzaSyDMlOAWV0hPByaFcpfarjqMs6-iZImWp9A"; //Key only usable on public site
 let geocoder;
 let map;
 let isFetch = false;
@@ -8,14 +8,15 @@ let country = null;
 let mode = "single"; //Map modes: single*, multi, global 
 let countries = [];
 let isoCodes = []
-let polygons = [];
+let polygons = {};
+let noDataCountries = {}
 
 function initMap() {
     map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: 20, lng: 10 },
         zoom: 2.9,
         mapTypeControl: false,
-        draggable: false,
+        draggable: true,
         scaleControl: false,
         scrollwheel: false,
         navigationControl: false,
@@ -38,13 +39,13 @@ function initMap() {
             .then(response => {
                 isFetch = false;
                 if (response.status != "OK") {
-                    show_alert("Clicked country was not recognized", 'danger');
+                    show_alert(languageText[lang].wrongCountry, 'danger');
                     return false;
                 }
 
                 if (response.plus_code.compound_code == undefined) { //If first possible path is not correct
                     if (response.results[response.results.length - 1].formatted_address == undefined) { //If second possible path is not correct
-                        show_alert("Clicked country was not recognized", 'danger');
+                        show_alert(languageText[lang].wrongCountry, 'danger');
                         return false;
                     } else {
                         country = response.results[response.results.length - 1].formatted_address;
@@ -53,12 +54,11 @@ function initMap() {
                     country = response.plus_code.compound_code.split(", ");
                     country = country[country.length - 1];
                 }
-                if (country.includes("Ocean")) {
-                    show_alert("Please select a valid country", 'danger');
+                if (country.includes("Ocean") || country.includes("Sea")) {
+                    show_alert(languageText[lang].invalidCountry, 'warning');
                     return false;
                 }
 
-                console.log(country)
                 document.querySelector('#selected-country').innerHTML = country
 
                 if (country.endsWith('Saudi Arabia')) {
@@ -81,41 +81,23 @@ function initMap() {
             .catch(error => show_alert(error, "danger"))
     });
 }
-/*const legend = [{
-    color: "#342414",
-    compartment: { "from": 0, "to": 20 },
-    countries: {
-        2000: [{ name: "Poland", value: 12 },
-            { name: "Mexico", value: 8 }
-        ],
-        2001: [{ name: "France", value: 18 }]
-    }
-}, {
-    color: "#253532",
-    compartment: { "from": 21, "to": 40 },
-    countries: {
-        2000: [{ name: "Canada", value: 24 }],
-        2001: [{ name: "Poland", value: 38 }]
-    }
-}];*/
 
 function checkBorders(legend, borders) {
-    let cos = [];
+    let blacklist = [];
     for (let object of legend) {
         for (year in object.countries) {
             for (country of object.countries[year]) {
-                if (borders[country.name] == undefined) {
-                    cos.push(country.name)
+                if (borders[country.name] == undefined && !blacklist.includes(country.name)) {
+                    blacklist.push(country.name)
                 }
-
             }
         }
     }
-    return cos;
+    return blacklist;
 }
-//const blacklist = JSON.parse(`["Comoros", "Equatorial Guinea", "Congo", "Dominican Republic", "Iran (Islamic Republic of)", "Timor-Leste", "Bolivia (Plurinational State of)", "Micronesia (Federated States of)", "Russian Federation", "Sao Tome and Principe", "Central African Republic", "Cabo Verde", "Guinea-Bissau", "Syrian Arab Republic", "United Republic of Tanzania", "Bosnia and Herzegovina", "Czechia", "Republic of Korea", "North Macedonia", "Viet Nam", "Côte d'Ivoire", "Lao People's Democratic Republic", "Republic of Moldova", "Mauritius", "Tonga", "Venezuela (Bolivarian Republic of)", "Samoa", "Kiribati", "Democratic People's Republic of Korea", "Solomon Islands", "South Sudan", "Eswatini", "Democratic Republic of the Congo"]`)
 
-function drawBorders(legendObject, borders, blacklist, vievedYear) { //Implement loading of one year only
+function drawBorders(legendObject, borders, blacklist, vievedYear, showNoData = { enabled: true, color: "#5e5e5e" }) { //Implement loading of one year only
+    let usedCountries = [];
     if (polygons[0] != undefined) {
         destroyPoligons()
     }
@@ -124,30 +106,67 @@ function drawBorders(legendObject, borders, blacklist, vievedYear) { //Implement
             continue;
         }
         for (country of object.countries[vievedYear]) {
+            if (polygons[country.name] == undefined) {
+                polygons[country.name] = [];
+            }
             if (blacklist.indexOf(country.name) != -1 || country.name == undefined) {
                 continue;
             }
+            usedCountries.push(country.name)
             if (Array.isArray(borders[country.name][0]) == true) {
                 for (chunk of borders[country.name]) {
-                    polygons.push(drawPolygon(chunk, object.color, country, vievedYear));
+                    polygons[country.name].push(drawPolygon(chunk, object.color, country, vievedYear));
                 }
             } else {
-                polygons.push(drawPolygon(borders[country.name], object.color, country, vievedYear));
+                polygons[country.name].push(drawPolygon(borders[country.name], object.color, country, vievedYear));
             }
         }
 
     }
-    for (polygon of polygons) {
-        polygon.setMap(map)
+
+    if (showNoData.enabled) {
+        for (country in borders) {
+            if (!usedCountries.includes(country)) {
+                if (noDataCountries[country] == undefined) {
+                    noDataCountries[country] = [];
+                }
+                if (Array.isArray(borders[country][0]) == true) {
+                    for (chunk of borders[country]) {
+                        noDataCountries[country].push(drawPolygon(chunk, showNoData.color, { name: country, value: languageText[lang].noDataPolygon }, vievedYear));
+                    }
+                } else {
+                    noDataCountries[country].push(drawPolygon(borders[country], showNoData.color, { name: country, value: languageText[lang].noDataPolygon }, vievedYear));
+                }
+                //noDataCountries.push(drawPolygon(borders[country], showNoData.color, { name: country, value: languageText[lang].noDataPolygon }, vievedYear))
+            }
+        }
+        for (country in noDataCountries) {
+            for (polygon of noDataCountries[country]) {
+                polygon.setMap(map);
+            }
+        }
+
+        for (country in polygons) {
+            for (polygon of polygons[country]) {
+                polygon.setMap(map);
+            }
+        }
+
     }
-    console.log(polygons.length)
 }
 
 function destroyPoligons() {
-    for (polygon of polygons) {
-        polygon.setMap(null)
+    for (country in polygons) {
+        for (polygon of polygons[country])
+            polygon.setMap(null);
     }
-    polygons = [];
+    for (country in noDataCountries) {
+        for (polygon of noDataCountries[country]) {
+            polygon.setMap(map);
+        }
+    }
+    noDataCountries = {};
+    polygons = {};
 }
 
 function drawPolygon(path, color, object, year) {
@@ -162,7 +181,6 @@ function drawPolygon(path, color, object, year) {
     });
     let infoWindow = new google.maps.InfoWindow();
     google.maps.event.addListener(polygon, "mouseover", function(e) {
-
         infoWindow.setContent(`
         Country: ${object.name}<br>
         Value: ${object.value}<br>
@@ -170,11 +188,26 @@ function drawPolygon(path, color, object, year) {
         var latLng = e.latLng;
         infoWindow.setPosition(latLng);
         infoWindow.open(map);
-        this.setOptions({ fillColor: "#00FF00", fillOpacity: 0.6 });
-
+        if (this.data.value == "No data") {
+            for (polygon of noDataCountries[this.data.name]) {
+                polygon.setOptions({ fillColor: "#00FF00", fillOpacity: 0.6 })
+            }
+        } else {
+            for (polygon of polygons[this.data.name]) {
+                polygon.setOptions({ fillColor: "#00FF00", fillOpacity: 0.6 })
+            }
+        }
     });
     google.maps.event.addListener(polygon, "mouseout", function() {
-        this.setOptions({ fillColor: color, fillOpacity: 0.8 });
+        if (this.data.value == "No data") {
+            for (polygon of noDataCountries[this.data.name]) {
+                polygon.setOptions({ fillColor: color, fillOpacity: 0.8 })
+            }
+        } else {
+            for (polygon of polygons[this.data.name]) {
+                polygon.setOptions({ fillColor: color, fillOpacity: 0.8 })
+            }
+        }
         infoWindow.close();
     });
     return polygon;
@@ -182,7 +215,12 @@ function drawPolygon(path, color, object, year) {
 
 function addCountry() { //Adds the country to the array and resets the view
     if (country == null) {
-        show_alert("Cannot add nothing to country list", "warning");
+        show_alert(languageText[lang].countryIsNull, "warning");
+        return false;
+    }
+
+    if (countries.includes(country)) {
+        show_alert(languageText[lang].countryOnList, "warning");
         return false;
     }
 
@@ -190,13 +228,14 @@ function addCountry() { //Adds the country to the array and resets the view
     country = null;
     map.setZoom(2.9);
     map.setCenter({ lat: 20, lng: 10 })
-    document.querySelector('#selected-country').innerHTML = "None";
+    document.querySelector('#selected-country').innerHTML = languageText[lang].nullCountry;
+    return true;
 }
 
 function resetView() {
     countries = [];
     country = null;
-    document.querySelector('#selected-country').innerHTML = "None";
+    document.querySelector('#selected-country').innerHTML = languageText[lang].nullCountry;
     document.querySelector('#category').disabled = true;
     document.querySelector('#subcategory').disabled = true;
     document.querySelector('#search').disabled = true;

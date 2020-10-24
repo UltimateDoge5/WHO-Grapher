@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang='en'>
+
     <head>
         <meta charset="UTF-8">
         <title>HACK HEORES APP</title>
@@ -23,8 +24,14 @@
         <div id="no-cursor"></div>
 
         <div id="languages">
-            <a href='http://localhost:8080/en'><div class="en"></div></a> <!-- change to heroku url -->
-            <a href='http://localhost:8080/pl'><div class="pl"></div></a> <!-- change to heroku url -->
+            <a href='/en'>
+                <div class="en"></div>
+            </a>
+
+            <a href='/pl'>
+                <div class="pl"></div>
+            </a>
+
         </div>
 
         <nav class='main-nav'>
@@ -42,7 +49,7 @@
                 </button>
             </div>
         </nav>
-      
+
         <nav class='mode-nav'>
             <div class='caption-mode'>Mode:</div>
             <button id="single" class='mode active-mode' data-toggle="tooltip" data-placement="bottom" title="Single Mode" value="single">
@@ -51,7 +58,7 @@
             <button id="multi" class='mode' data-toggle="tooltip" data-placement="bottom" title="Multi Mode" value='multi'>
                 <i class="fas fa-users"></i>
             </button>
-            <button id="global"  class='mode' data-toggle="tooltip" data-placement="bottom" title="Global Mode" value='global'>
+            <button id="global" class='mode' data-toggle="tooltip" data-placement="bottom" title="Global Mode" value='global'>
                 <i class="fas fa-globe-americas"></i>
             </button>
             <button id="tutorial" data-toggle="tooltip" data-placement="bottom" title="Tutorial Mode">
@@ -69,7 +76,7 @@
                     <select id="subcategory" disabled>
                     </select>
 
-                    <button id='search' disabled>view</button>
+                    <button id='search' disabled>View</button>
 
                 </div>
 
@@ -81,15 +88,15 @@
 
                 <div id="legend">
                     <h2 class='legend-title'>Legend</h2>
-        
+
                     <div class="inputs-color">
                         <input type="color" id="color1" name="color1" value="#d10000">
-        
+
                         <input type="color" id="color2" name="color2" value="#309100">
                     </div>
-                   
+
                     <ul class='legend-list'>
-                        
+
                     </ul>
                 </div>
 
@@ -105,14 +112,14 @@
                 <i class="fas fa-play"></i>
             </button>
 
-                <div id="range">
-                    <form oninput="year.value=active_years[years.value]">
+            <div id="range">
+                <form oninput="year.value=active_years[years.value]">
                     <input type="range" class="form-control-range" id="years" name='years' list="years__list">
                     <output for="years" name='year' id='output'></output>
-                    
+
                     <datalist id="years__list"></datalist>
-                    </form>
-                </div>
+                </form>
+            </div>
         </div>
 
         <!-- MAP -->
@@ -131,51 +138,51 @@
                     Cancel
                 </button>
                 <button class='alert_btn' id='accept-btn'>
-                    Accept
+                    Continue
                 </button>
             </div>
-      </div>
-          
-          <!-- MODAL -->
-          <div class="modal fade" id="chart_modal">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" >Modal title</h5>
+        </div>
 
-                  <div>
-                    <button class='fullscreen'>
+        <!-- MODAL -->
+        <div class="modal fade" id="chart_modal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Modal title</h5>
+
+                        <div>
+                            <button class='fullscreen'>
                         <span><i class="fas fa-expand"></i><span>
                     </button>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                  </div>
-                 
-                </div>
-                <div class="modal-body">
-                    
-                    <div class="col-md-10">
-                        <canvas id="chart"></canvas>
-                    </div>
-
-                    <div class="col-md-2" class='settings'>
-                        <div>
-                            <h4>Chart Type</h4>
-                            <select id="chart_type">
-                                <option value="bar" selected>BAR</option>
-                                <option value="line">LINE</option>
-                            </select>
                         </div>
-                        <div class='difference'></div>
-                  </div>
+
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="col-md-10">
+                            <canvas id="chart"></canvas>
+                        </div>
+
+                        <div class="col-md-2" class='settings'>
+                            <div>
+                                <h4>Chart Type</h4>
+                                <select id="chart_type">
+                                <option value="bar" selected>Bar</option>
+                                <option value="line">Line</option>
+                            </select>
+                            </div>
+                            <div class='difference'></div>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
+        </div>
 
         <!-- TOASTS FOR TUTORIAL MODE -->
-    
+
         <div class="container_toasts">
 
             <button class='exit'>
@@ -189,28 +196,29 @@
 
             <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
                 <div class="toast-header">
-                  <strong class="mr-auto">TUTORIAL MODE</strong>
-                  <button type="button" class="ml-2 mb-1" id="next">
+                    <strong class="mr-auto">TUTORIAL MODE</strong>
+                    <button type="button" class="ml-2 mb-1" id="next">
                     <span>NEXT</span>
 
                   </button>
                 </div>
                 <div class="toast-body">
-                  
+
                 </div>
-              </div>
+            </div>
 
-          </div>
+        </div>
 
-    <!-- SCRIPTS -->
+        <!-- SCRIPTS -->
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-    <script src="./public/javascript/objects.js"></script>
-    <script src="./public/javascript/gradient.js"></script>
-    <script src="./public/javascript/gui.js"></script>
-    <script src="./public/javascript/map.js"></script>
-    <script src="./public/javascript/charts.js"></script>
-</body>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+        <script src="./public/javascript/objects.js"></script>
+        <script src="./public/javascript/gradient.js"></script>
+        <script src="./public/javascript/gui.js"></script>
+        <script src="./public/javascript/map.js"></script>
+        <script src="./public/javascript/charts.js"></script>
+    </body>
+
 </html>

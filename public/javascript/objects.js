@@ -1,6 +1,4 @@
-// country list
-
-const countriesObject = {
+const countriesObject = { // country list
     "Afghanistan": "AFG",
     "Albania": "ALB",
     "Algeria": "DZA",
@@ -58,6 +56,7 @@ const countriesObject = {
     "Cyprus": "CYP",
     "Czechia": "CZE",
     "Republic of the Congo": "COG",
+    "Democratic Republic of the Congo": "COD",
     "Denmark": "DNK",
     "Djibouti": "DJI",
     "Dominica": "DMA",
@@ -236,104 +235,152 @@ const countriesObject = {
     "Zimbabwe": "ZWE"
 
 }
+
 const categories = {
     suicide: {
-        name: "Suicide",
-        subcategories: [
-            /*{
-                            name: "Suicide rate (per 100,000 population)",
-                            code: "SDGSUICIDE"
-                        },*/
-            {
-                name: "Age-standardized suicide rates (per 100 000 population)",
-                code: "MH_12"
-            }
-        ]
+        nameEN: "Suicide",
+        namePL: "Samobójstwa",
+        subcategories: [{
+            nameEN: "Suicide rates (per 100 000 population)",
+            namePL: "Wskaźnik samobójstw (na 100 000 populacji)",
+            code: "MH_12"
+        }]
     },
-    /*obesity: {
-        name: "Obesity",
+    diseases: {
+        nameEN: "Diseases",
+        namePL: "Choroby Zakaźne",
         subcategories: [{
-                name: "Prevalence of obesity",
-                code: "EQ_BMI30"
-            },
-            {
-                displayName: "Prevalence of obesity among adults",
-                name: "Prevalence of obesity among adults, BMI > 30 (age-standardized estimate) (%)",
-                code: "NCD_BMI_30A"
-            },
-            {
-                displayName: "Prevalence of obesity among children and adolescents",
-                name: "Prevalence of obesity among children and adolescents, BMI > +2 standard deviations above the median (crude estimate) (%)",
-                code: "NCD_BMI_PLUS2C"
-            }
-        ]
-    },*/
+            code: "MALARIA002",
+            nameEN: "Number of malaria cases",
+            namePL: "Liczba przypadków malarii"
+        }, {
+            code: "HIV_0000000026",
+            name: "Number of new HIV infections",
+            namePL: "Liczba nowych zakażeń wirusem HIV"
+        }]
+
+    },
     airPollution: {
-        name: "Air pollution",
+        nameEN: "Air pollution",
+        namePL: "Zanieczyszczenie powietrza",
         subcategories: [{
-            name: "Ambient air pollution attributable deaths",
+            nameEN: "Ambient air pollution attributable deaths",
+            namePL: "Zgony zpowodowane zanieczyszceniem powietrza",
             code: "AIR_1"
         }, {
-            name: "Household air pollution attributable deaths",
-            code: "AIR_11"
+            nameEN: "Ambient air pollution (Annual PM10)",
+            namePL: "Zanieczyszczenie powietrza (Roczne PM10)",
+            code: "AIR_2",
+            unit: "&microg/m3"
         }]
     }
 }
 
-let toasts = [
-    {
-        'text': 'Click on any country!',
+const toasts = [{
+        'text': 'Click on any country to select it!',
         'position': '6 / 6 / 7 / 8'
     },
     {
-        'text': 'You can reset view and selected country!',
+        'text': 'By clicking reset button you reset everything you selected!',
         'position': '3 / 6 / 4 / 9'
     },
     {
-        'text': 'Select categories and subcategories!',
+        'text': 'After you chose a country, select a category and subcategory that you would like to view!',
         'position': '3 / 4 / 4 / 6'
     },
     {
-        'text': 'Click the button!',
+        'text': 'Click the "view" button!',
         'position': '4 / 4 / 5 / 6'
     },
     {
-        'text': 'You can change the chart type!',
+        'text': 'You can alse change the chart type!',
         'position': '5 / 10 / 6 / 12'
     },
     {
-        'text': 'You can display the graph on fullscreen!',
+        'text': 'In top right corner you can display the graph on fullscreen!',
         'position': '2 / 9 / 3 / 11'
     },
     {
-        'text': 'You can also choose different modes!',
+        'text': 'We have diffrent modes too!',
         'position': '3 / 10 / 3 / 12'
     },
     {
-        'text': 'Add country to country list! (multi mode)',
+        'text': 'Afrer changing to multi mode now you can compare multiple countries! Add country to country list!',
         'position': '3 / 6 / 4 / 9'
     },
     {
-        'text': 'Sample country list!',
+        'text': 'We prepared an example country list for you!',
         'position': '7 / 4 / 8 / 6'
     },
     {
-        'text': 'You can hide the gui! (global mode)',
+        'text': 'In global mode you can display values on a map! We provided the option to hide the gui! So you can use it like a normal map!',
         'position': '3 / 8 / 4 / 10'
     },
     {
-        'text': 'You can change the color of the legend!',
+        'text': 'You can change the colors of the legend!',
         'position': '8 / 4 / 9 / 6'
     },
     {
-        'text': 'You can change the years!',
+        'text': 'You can change the years using the slider below!',
         'position': '9 / 9 / 10 / 11'
     },
     {
-        'text': 'You can run the simulation!',
+        'text': 'By clicking the play button you can play little animation how values changed over the years!',
         'position': '9 / 6 / 10 / 8'
     },
 ]
+
+const languageText = {
+    EN: {
+        globalMode: "All countries",
+        countryOnList: "This country is already on the list",
+        countryIsNull: "Cannot add nothing to country list",
+        noDataPolygon: "No data",
+        invalidCountry: "Please select a valid country",
+        wrongCountry: "Clicked country was not recognized",
+        noData: "No data avaiable for this country",
+        fetchError: "Error while fetching data",
+        minCountry: "Please select 2 or more countries",
+        nullCountry: "None",
+        dataZero: "Data is equal to zero and is not able to be displayed on graph",
+        dataZeroMulti: [
+            "Data for countries: ", " is equal to zero and won't be displayed"
+        ],
+        difference: {
+            increased: function(value1, value2, country, subcategory, percent) {
+                return `<p>For ${country}, between years <b>${value1}</b> and <b>${value2}</b> ${subcategory} increased by <b>${percent}</b>%</p>`;
+            },
+            decreased: function(value1, value2, country, subcategory, percent) {
+                return `<p>For ${country}, between years <b>${value1}</b> and <b>${value2}</b> ${subcategory} decreased by <b>${percent}</b>%</p>`;
+            },
+        }
+    },
+    PL: {
+        globalMode: "Wszystkie kraje",
+        countryOnList: "Ten kraj już się znajduje na liście",
+        countryIsNull: "Nie można dodać niczego do listy",
+        noDataPolygon: "Brak danych",
+        invalidCountry: "Prosze wybrać prawidłowy kraj",
+        wrongCountry: "Wybrany kraj nie został rozpoznany",
+        noData: "Brak danych dla tego kraju",
+        fetchError: "Błąd przy pobieraniu danych",
+        minCountry: "Prosze wybrać minimum 2 kraje",
+        nullCountry: "Brak",
+        dataZero: "Dane są równe zeru i nie są w stanie być wyświetlone",
+        dataZeroMulti: [
+            "Dane dla krajów: ", " są równe zeru i nie zostaną wyświetlone"
+        ],
+        difference: {
+            increased: function(value1, value2, country, subcategory, percent) {
+                return `<p>Dla ${country}, w latach <b>${value1}</b> a <b>${value2}</b> ${subcategory} wzrosło o <b>${percent}</b>%</p>`;
+            },
+            decreased: function(value1, value2, country, subcategory, percent) {
+                return `<p>Dla ${country}, w latach <b>${value1}</b> a <b>${value2}</b> ${subcategory} spadło o <b>${percent}</b>%</p>`;
+            },
+        }
+
+    }
+}
 
 const countryToIso = country => {
     return countriesObject[country]
