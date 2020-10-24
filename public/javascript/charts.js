@@ -204,9 +204,9 @@ const pointDifference = () => {
         const between = [chart.data.labels[0], chart.data.labels[chart.data.labels.length - 1]];
         const percent = Math.abs(roundToTwo(difference / data[0] * 100));
         if (difference > 0) { // increased
-            document.querySelector('.difference').innerHTML += `<p>For ${country.label}, between years <b>${between[0]}</b> and <b>${between[1]}</b> ${subcategory} increased by <b>${percent}</b>%</p>`;
+            document.querySelector('.difference').innerHTML += `<p>For <b>${country.label}</b>, between years <b>${between[0]}</b> and <b>${between[1]}</b> ${subcategory} increased by <b>${percent}</b>%</p>`;
         } else { // decreased
-            document.querySelector('.difference').innerHTML += `<p>For ${country.label}, between years <b>${between[0]}</b> and <b>${between[1]}</b> ${subcategory} decreased by <b>${percent}</b>%</p>`;
+            document.querySelector('.difference').innerHTML += `<p>For <b>${country.label}</b>, between years <b>${between[0]}</b> and <b>${between[1]}</b> ${subcategory} decreased by <b>${percent}</b>%</p>`;
         }
     }
 
@@ -275,7 +275,8 @@ function renderGlobalMode(data) {
     let years = getYearsForGlobal(data);
     years_list(years); // generate caption for years range
     parsedData = (getGlobalData(data, years), minMax);
-    legend = assignToLegend(generateCompartment(minMax, 5), getGlobalData(data, years), legends_colors()); //@kacper  generacja kolorów
+    legend = assignToLegend(generateCompartment(minMax, 5), getGlobalData(data, years), legend_color_list(legends_colors()));
+    legend_compartments(legend)
     blacklist = JSON.stringify(checkBorders(legend, borders));
     let keys = Object.keys(legend[0].countries);
     drawBorders(legend, borders, blacklist, keys[keys.length - 1]);
@@ -284,7 +285,6 @@ function renderGlobalMode(data) {
 function getBorders() {
     borders = JSON.parse(localStorage.getItem("borders"));
     if (borders == null) {
-        console.log('ffdfd')
         getData(`/getBorders`) //Fetch only one country for single-country chart
         .then(response => {
                 localStorage.setItem("borders", JSON.stringify(response));
@@ -339,7 +339,7 @@ function GenerateColors(data) {
     for (let i = 0; i < data.length; i++) {
         let rgb = []
         for (let j = 0; j < 3; j++) {
-            let random = Math.floor(Math.random() * (256 - 100)) + 100; // min = 150 || max = 256
+            let random = Math.floor(Math.random() * (201 - 100)) + 100; // min = 150 || max = 256
             rgb.push(random)
         }
         const to_rgba = (aplha) => `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${aplha})`
@@ -367,7 +367,6 @@ function assignToLegend(compartments, data, colors) {
     }
     i = 0;
     console.log(compartments, data, legend)
-    legend_compartments(compartments)
     for (year in data) {
         for (country of data[year]) {
             for (compartment of compartments) {

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html lang='en'>
     <head>
         <meta charset="UTF-8">
         <title>HACK HEORES APP</title>
@@ -15,11 +16,16 @@
         <!--BOOTSTRAP CSS-->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
         <!-- CHART JS -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css" integrity="sha512-/zs32ZEJh+/EO2N1b0PEdoA10JkdC3zJ8L5FTiQu82LR9S/rOQNfQN7U59U9BC12swNeRAz3HSzIL2vpp4fv3w==" crossorigin="anonymous" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha512-s+xg36jbIujB2S2VKfpGmlC3T5V2TF3lY48DX7u2r9XzGzgPsa6wTpOQA7J9iffvdeBN0q9tKzRxVxw1JviZPg==" crossorigin="anonymous"></script>
     </head>
 
     <body>
+        <div id="no-cursor"></div>
+
+        <div id="languages">
+            <a href='http://localhost:8080/en'><div class="en"></div></a> <!-- change to heroku url -->
+            <a href='http://localhost:8080/pl'><div class="pl"></div></a> <!-- change to heroku url -->
+        </div>
 
         <nav class='main-nav'>
             <div>Selected Country: <b id='selected-country'>None</b></div>
@@ -30,6 +36,9 @@
                 </button>
                 <button id='reset'>
                     <span><i class="fas fa-undo"></i> RESET</span>
+                </button>
+                <button id='hidden-gui' data-toggle="tooltip" data-placement="bottom" title="Hide GUI">
+                    <i class="far fa-eye-slash"></i>
                 </button>
             </div>
         </nav>
@@ -60,8 +69,7 @@
                     <select id="subcategory" disabled>
                     </select>
 
-
-                    <button id='search' data-toggle="modal" data-target="#chart_modal" disabled>view</button>
+                    <button id='search' disabled>view</button>
 
                 </div>
 
@@ -73,21 +81,18 @@
 
                 <div id="legend">
                     <h2 class='legend-title'>Legend</h2>
-
+        
                     <div class="inputs-color">
                         <input type="color" id="color1" name="color1" value="#d10000">
-
+        
                         <input type="color" id="color2" name="color2" value="#309100">
                     </div>
                    
-
-                <button id='generate'>generate</button>
-
                     <ul class='legend-list'>
                         
                     </ul>
                 </div>
-                
+
             </div>
 
             <button>
@@ -96,19 +101,42 @@
         </div>
 
         <div id="years-range">
+            <button class='play'>
+                <i class="fas fa-play"></i>
+            </button>
+
                 <div id="range">
-                  <input type="range" class="form-control-range" id="years" list="years__list">
-                  
-                  <datalist id="years__list"></datalist>
-                  
+                    <form oninput="year.value=active_years[years.value]">
+                    <input type="range" class="form-control-range" id="years" name='years' list="years__list">
+                    <output for="years" name='year' id='output'></output>
+                    
+                    <datalist id="years__list"></datalist>
+                    </form>
                 </div>
         </div>
 
+        <!-- MAP -->
         <div id="map"></div>
 
+        <!-- ALERTS -->
+
         <div id="alerts"></div>
+
+        <div class="alert-danger" role="alert" id="global_alert">
+            <h4 class="alert-heading">WARNING!</h4>
+            <p>Global mode loads big amounts of data and ueses it! This may cause problems with old computers and weak internet connection.</p>
+            <hr>
+            <div class="mb-0 alert_btns">
+                <button class='alert_btn' id='cancel-btn'>
+                    Cancel
+                </button>
+                <button class='alert_btn' id='accept-btn'>
+                    Accept
+                </button>
+            </div>
+      </div>
           
-          <!-- Modal -->
+          <!-- MODAL -->
           <div class="modal fade" id="chart_modal">
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
@@ -135,7 +163,7 @@
                         <div>
                             <h4>Chart Type</h4>
                             <select id="chart_type">
-                                <option value="bar">BAR</option>
+                                <option value="bar" selected>BAR</option>
                                 <option value="line">LINE</option>
                             </select>
                         </div>

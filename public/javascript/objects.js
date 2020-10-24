@@ -280,7 +280,8 @@ const categories = {
     }
 }
 
-let toasts = [{
+let toasts = [
+    {
         'text': 'Click on any country!',
         'position': '6 / 6 / 7 / 8'
     },
@@ -313,9 +314,25 @@ let toasts = [{
         'position': '3 / 6 / 4 / 9'
     },
     {
-        'text': 'Sample country list',
+        'text': 'Sample country list!',
         'position': '7 / 4 / 8 / 6'
-    }
+    },
+    {
+        'text': 'You can hide the gui! (global mode)',
+        'position': '3 / 8 / 4 / 10'
+    },
+    {
+        'text': 'You can change the color of the legend!',
+        'position': '8 / 4 / 9 / 6'
+    },
+    {
+        'text': 'You can change the years!',
+        'position': '9 / 9 / 10 / 11'
+    },
+    {
+        'text': 'You can run the simulation!',
+        'position': '9 / 6 / 10 / 8'
+    },
 ]
 
 const countryToIso = country => {

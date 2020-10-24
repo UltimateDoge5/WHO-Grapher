@@ -56,7 +56,7 @@ let category_select = document.querySelector("#category");
 const prepare_categories_options = () => {
     for (let category in categories) {
         const category_value = category;
-        const category_name = categories[category].name;
+        const category_name = categories[category][`name`];
         category_select.innerHTML += `<option value="${category_value}">${category_name}</option>`;
     }
     prepare_subcategories_options()
@@ -78,7 +78,7 @@ function prepare_subcategories_options() {
         if (subcategory.displayName) {
             subcategory_select.innerHTML += `<option value="${subcategory.name}">${subcategory.displayName}</option>`;
         } else {
-            subcategory_select.innerHTML += `<option value="${subcategory.name}">${subcategory.name}</option>`;
+            subcategory_select.innerHTML += `<option value="${subcategory.name}">${subcategory[`name`]}</option>`;
         }
     }
 }
@@ -105,23 +105,26 @@ function change_mode() {
         btn_add_country.style.visibility = "visible";
         document.querySelector("#selected-countries").style.display = "block";
         document.querySelector('#years-range').style.display = 'none';
-        document.querySelector('#legend').style.display = 'none'
+        document.querySelector('#legend').style.display = 'none';
+        document.querySelector("#hidden-gui").style.visibility = 'hidden';
         resetView();
     }
     else if(mode == "single"){
         btn_add_country.style.visibility = "hidden";
         document.querySelector("#selected-countries").style.display = "none";
         document.querySelector('#years-range').style.display = 'none';
-        document.querySelector('#legend').style.display = 'none'
+        document.querySelector('#legend').style.display = 'none';
+        document.querySelector("#hidden-gui").style.visibility = 'hidden';
         resetView();
     }
     else if (mode == "global") {
         btn_add_country.style.visibility = "hidden";
         document.querySelector("#selected-countries").style.display = "none";
         document.querySelector('#legend').style.display = 'block';
-        document.querySelector('#years-range').style.display = 'block';
+        document.querySelector("#hidden-gui").style.visibility = 'visible';
         resetView();
         enable_categories();
+        document.querySelector('#selected-country').innerHTML = 'All Countries';
     }
 }
 
@@ -133,10 +136,7 @@ items_mode.forEach(item => {
 
 let active_years;
 
-const legends_colors = () => {
-    const colors = [document.querySelector('#color1').value, document.querySelector('#color2').value];
-
-    const gradient = generateGradient(colors[0], colors[1], 5);
+const legend_color_list = gradient => {
     const legend_list = document.querySelector('.legend-list');
     legend_list.innerHTML = "";
 
@@ -147,30 +147,52 @@ const legends_colors = () => {
     return gradient
 }
 
-document.querySelector('#generate').addEventListener('click',  legends_colors);
+const legends_colors = () => {
+    const colors = [document.querySelector('#color1').value, document.querySelector('#color2').value];
+    const gradient = generateGradient(colors[1], colors[0], 5);
+
+    return gradient
+}
 
 function change_year(){
+    destroyPoligons();
     drawBorders(legend, borders, blacklist, active_years[this.value]);
 }
 
-document.querySelector('#years').addEventListener('change', change_year)
+function output(){
+    let range = document.querySelector('#years');
+    const value = Number(((range.value - range.min) * 100) / (range.max - range.min))
+    const left = `calc(${value}% + (${-22 - value * 0.15}px))`;
+    document.querySelector('#output').style.left = left;
+}
 
-const years_list = (years) => { // param Object.keys()
+document.querySelector('#years').addEventListener('change', change_year)
+document.querySelector('#years').addEventListener('input', output)
+
+const years_list = (years) => {
     active_years = years;
     const years_list = document.querySelector('#years__list'); years_list.innerHTML = "";
     const years_range = document.querySelector('#years');
+    const output = document.querySelector('#output');
     years_range.min = 0; years_range.max = years.length - 1; years_range.step = 1; years_range.value = years.length - 1;
+    output.innerHTML = active_years[years_range.value]; output.style.visibility = 'visible'; 
 
-    for(let year of years){
-        years_list.innerHTML += `<option value="${year}" label="${year}">`
+    for(let i = 0; i <  years.length; i++){
+        if(years.length > 20){
+            if(i % 2 === 0){
+                years_list.innerHTML += `<option value="${years[i]}" label="${years[i]}">`
+            }
+            continue;
+        }
+        years_list.innerHTML += `<option value="${years[i]}" label="${years[i]}">`
     }
 } 
 
-const legend_compartments = (compartments) => {
+const legend_compartments = (legend) => {
     const compartments_list = document.querySelectorAll('.compartments');
 
-    for(let i = 0; i < compartments.length; i++){
-        compartments_list[i].innerHTML = `${compartments[i]['from'].toFixed(2)} - ${compartments[i]['to'].toFixed(2)}`
+    for(let i = 0; i < legend.length; i++){
+        compartments_list[i].innerHTML = `${legend[i].compartment['from'].toFixed(1)} - ${legend[i].compartment['to'].toFixed(1)}`
     }
 }
 
@@ -215,21 +237,22 @@ function delete_country() {
 
 // MODAL
 
-const update_modal_header = () => {
+const update_modal_header = (unit) => {
     const modal_title = document.querySelector(".modal-title");
     if(mode == "multi"){
         let country_list = countries.join(", ");
-        modal_title.innerHTML = `<b>Country:</b> ${country_list}, <b>Category:</b> ${category}, <b>Subcategory:</b> ${subcategory}`;
-        return;
+        modal_title.innerHTML = `<b>Country:</b> ${country_list}, <b>Category:</b> ${category}, <b>Subcategory:</b> ${subcategory} ${unit ? `, <b>Unit:</b> ` + unit : ``}`;
+        return false;
     }
-    modal_title.innerHTML = `<b>Country:</b> ${country}, <b>Category:</b> ${category}, <b>Subcategory:</b> ${subcategory}`;
+    modal_title.innerHTML = `<b>Country:</b> ${country}, <b>Category:</b> ${category}, <b>Subcategory:</b> ${subcategory} ${unit ? `, <b>Unit:</b> ` + unit : ``}`;
+    document.querySelector('#chart_type').selectedIndex = 0;
 }
 
 const btn_fullscreen = document.querySelector(".fullscreen");
 
 btn_fullscreen.addEventListener("click", () => {
-    document.querySelector(".modal-dialog").classList.toggle("modal-dialog__fullscreen")
-    document.querySelector(".modal-content").classList.toggle("modal-content__fullscreen")
+    document.querySelector(".modal-dialog").classList.toggle("modal-dialog__fullscreen");
+    document.querySelector(".modal-content").classList.toggle("modal-content__fullscreen");
 })
 
 
@@ -239,24 +262,53 @@ btn_fullscreen.addEventListener("click", () => {
 const search_code = (category, subcategory) => {
     for (let sub of categories[category]["subcategories"]) {
         if (sub.name === subcategory) {
-            return sub.code
+            return sub
         }
     }
 }
+
+const warning_global = () => {
+    if(!localStorage.getItem('is_visited')){
+        document.querySelector('#global_alert').style.visibility = 'visible';
+    }
+    else{
+        const active_sub_code = search_code(category, subcategory);
+        fetchGlobal(active_sub_code.code);
+        document.querySelector('#years-range').style.display = 'block';
+    }
+}
+
+document.querySelector('#cancel-btn').addEventListener('click', () => {
+    document.querySelector('#global_alert').style.visibility = 'hidden';
+})
+
+document.querySelector('#accept-btn').addEventListener('click', () => {
+    localStorage.setItem('is_visited', true)
+    document.querySelector('#years-range').style.display = 'block';
+    document.querySelector('#global_alert').style.visibility = 'hidden';
+
+    const active_sub_code = search_code(category, subcategory);
+    fetchGlobal(active_sub_code.code);
+})
+
 
 category_select.addEventListener("change", prepare_subcategories_options);
 document.querySelector("#subcategory").addEventListener("change", choose_subcategory)
 
 document.querySelector("#search").addEventListener("click", () => {
     const active_sub_code = search_code(category, subcategory);
-    update_modal_header();
+    update_modal_header(active_sub_code.unit);
+    destroyPoligons()
 
     if (mode == "single") {
-        fetchSingleCountry(active_sub_code)
+        fetchSingleCountry(active_sub_code.code)
+        $('#chart_modal').modal('show')
     } else if (mode == "multi") {
-        fetchMultipleCountries(active_sub_code)
+        fetchMultipleCountries(active_sub_code.code)
+        $('#chart_modal').modal('show')
     } else if (mode == "global") {
-        fetchGlobal(active_sub_code)
+        warning_global()
+        
     } else {
         show_alert(`No mode named: ${mode}`, "danger")
     }
@@ -268,6 +320,52 @@ function change_type_chart() {
 }
 
 document.querySelector("#chart_type").addEventListener("click", change_type_chart)
+
+// ALL GUI SHOW OR HIDE
+
+let hidden_gui_mode = false
+
+const hide_gui = () => {
+    document.querySelector('#sidebar').style.visibility = 'hidden';
+    document.querySelector('#legend').classList.add('print-legend');
+    document.querySelector('.main-nav').style.visibility = 'hidden';
+    document.querySelector('.mode-nav').style.visibility = 'hidden';
+    document.querySelector('#years-range').style.visibility = 'hidden';
+    document.querySelector('#hidden-gui').style.visibility = 'hidden';
+    document.querySelector('#no-cursor').style.visibility = 'visible';
+    document.querySelector('.inputs-color').style.display = 'none';
+    document.querySelector('.legend-title').style.display = 'none';
+    document.querySelector('#sidebar').classList.remove('side-active');
+    document.querySelector('#sidebar').classList.add('side-hidden')
+    map.setOptions({ disableDefaultUI: true})
+    show_alert("To exit click escape!", "info");
+    setTimeout(() => {$(".alert").alert('close')}, 3000)
+    hidden_gui_mode = true;
+}
+
+const show_gui = () => {
+    document.querySelector('#sidebar').style.visibility = 'visible';
+    document.querySelector('#legend').classList.remove('print-legend');
+    document.querySelector('.main-nav').style.visibility = 'visible';
+    document.querySelector('.mode-nav').style.visibility = 'visible';
+    document.querySelector('#years-range').style.visibility = 'visible';
+    document.querySelector('#hidden-gui').style.visibility = 'visible';
+    document.querySelector('#no-cursor').style.visibility = 'hidden';
+    document.querySelector('.inputs-color').style.display = 'block';
+    document.querySelector('.legend-title').style.display = 'block';
+    map.setOptions({ disableDefaultUI: false})
+    hidden_gui_mode = false;
+}
+
+document.querySelector('#hidden-gui').addEventListener('click', hide_gui);
+
+window.addEventListener('keydown', (event) => {
+    if(hidden_gui_mode){
+        if(event.key == 'Escape'){
+            show_gui();
+        }
+    }
+})
 
 // TUTORIAL MODE
 let is_tutorial_mode = false;
@@ -285,6 +383,7 @@ const reset_css = () => {
     document.querySelector("#single").click();
     document.querySelector('.fullscreen').style.color = '';
     document.querySelector('.fullscreen').style.fontSize = '';
+    document.querySelector('#years-range').style.zIndex = "1";
     close_modal()
 }
 
@@ -314,11 +413,17 @@ document.querySelector(".exit").addEventListener("click", () => {
     reset_tutorial_mode()
     reset_css()
 })
+
 // imitating user events
 
 const active_sidebar = () => {
     document.querySelector('#sidebar').classList.remove('side-hidden');
     document.querySelector('#sidebar').classList.add('side-active')
+}
+
+const hidden_sidebar = () => {
+    document.querySelector('#sidebar').classList.remove('side-active');
+    document.querySelector('#sidebar').classList.add('side-hidden')
 }
 
 const show_modal = () => {
@@ -347,11 +452,19 @@ const clear_country_list = () => {
     document.querySelector(".selected-countries__list").innerHTML = "";
 }
 
+const global_mode = () => {
+    document.querySelector('#global').click();
+    document.querySelector('#search').click();
+}
+
 // toast service
 const next_toast = () => {
     if(number_hint === toasts.length -1){
         document.querySelector('.end_tutorial').style.visibility = "visible";
+        document.querySelector('#years-range').style.zIndex = "1";
         $(".toast").toast("hide");
+        
+        hidden_sidebar()
         clear_country_list();
         return false;
     }
@@ -364,12 +477,13 @@ const render_toast = () => {
     const active = toasts[number_hint]
     let toast = document.querySelector(".toast")
     let toast_body = document.querySelector(".toast-body");
-    toast_body.innerHTML = active.text;
+    toast_body.innerHTML = active[`text${lang}`];
     console.log(number_hint)
 
     switch(number_hint){
         case 0: 
-            return true;
+            mode = 'single';
+            resetView();
             break;
         case 1:
             document.querySelector('.main-nav').style.zIndex = max_z_index;
@@ -404,6 +518,20 @@ const render_toast = () => {
             document.querySelector('#sidebar').style.zIndex = max_z_index;
             sample_country_list(0); sample_country_list(1); sample_country_list(2);
             break;
+        case 9:
+            global_mode();
+            document.querySelector('.main-nav').style.zIndex = max_z_index;
+            break;
+        case 10:
+            document.querySelector('.main-nav').style.zIndex = "1";
+            document.querySelector('#sidebar').style.zIndex = max_z_index;
+            break;
+        case 11: 
+            document.querySelector('#sidebar').style.zIndex = "1";
+            document.querySelector('#years-range').style.zIndex = max_z_index;
+            break;
+        case 12:
+            break;
     }
 
     toast.style.gridArea = active.position;
@@ -413,3 +541,37 @@ const render_toast = () => {
 document.querySelector("#next").addEventListener("click", () => {
     next_toast()
 })
+
+// SIMULATION
+
+const range = document.querySelector('#years');
+const play_btn = document.querySelector('.play');
+let value = 0;
+
+const simulation = () => {
+    let min_max = [range.min, range.max];
+
+    document.querySelector('#sidebar').classList.remove('side-active');
+    document.querySelector('#sidebar').classList.add('side-hidden')
+    play_btn.disabled = true;
+
+    drawBorders(legend, borders, blacklist, active_years[value]);
+
+    document.querySelector('#years').value = value
+    output();
+    document.querySelector('#output').innerHTML = active_years[value]
+
+    range.value = value;
+    if(value == min_max[1]){
+        play_btn.disabled = false
+        document.querySelector('#sidebar').classList.remove('side-hidden')
+        document.querySelector('#sidebar').classList.add('side-active')
+
+        value = 0;
+        return false;
+    }
+    value++;
+    setTimeout(simulation, 2500);
+}
+
+play_btn.addEventListener('click', simulation);
