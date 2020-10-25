@@ -73,6 +73,8 @@ function prepare_subcategories_options() {
     category = this.value || "suicide";
     choose_subcategory()
 
+    console.log(subcategory)
+
     subcategories = categories[category]["subcategories"];
 
     for (let subcategory of subcategories) {
@@ -85,8 +87,10 @@ function prepare_subcategories_options() {
 }
 
 function choose_subcategory() {
-    subcategory = this.value || categories[category]["subcategories"][0]["name"]
+    subcategory = this.value || categories[category]["subcategories"][0][`name${lang}`]
 }
+
+document.querySelector('#subcategory').addEventListener('change', choose_subcategory)
 
 // MODES
 
@@ -148,7 +152,8 @@ const legend_color_list = gradient => {
 
 const legends_colors = () => {
     const colors = [document.querySelector('#color1').value, document.querySelector('#color2').value];
-    const gradient = generateGradient(colors[1], colors[0], 5);
+    let gradient = generateGradient(colors[1], colors[0], 5);
+    gradient.push('#5e5e5e');
 
     return gradient
 }
@@ -171,7 +176,7 @@ document.querySelector('#years').addEventListener('input', output)
 const years_list = (years) => {
     active_years = years;
     const years_list = document.querySelector('#years__list');
-    years_list.innerHTML = "";
+    years_list.innerHTML = '';
     const years_range = document.querySelector('#years');
     const output = document.querySelector('#output');
     years_range.min = 0; years_range.max = years.length - 1; years_range.step = 1; years_range.value = years.length - 1;
@@ -194,6 +199,7 @@ const legend_compartments = (legend) => {
     for(let i = 0; i < legend.length; i++){
         compartments_list[i].innerHTML = `${legend[i].compartment['from'].toFixed(1)} - ${legend[i].compartment['to'].toFixed(1)}`
     }
+    compartments_list[compartments_list.length-1].innerHTML = `No Data`;
 }
 
 
@@ -261,7 +267,7 @@ btn_fullscreen.addEventListener("click", () => {
 // search code for api url
 const search_code = (category, subcategory) => {
     for (let sub of categories[category]["subcategories"]) {
-        if (sub.name === subcategory) {
+        if (sub.nameEN === subcategory) {
             return sub
         }
     }
@@ -326,6 +332,7 @@ document.querySelector("#chart_type").addEventListener("click", change_type_char
 let hidden_gui_mode = false
 
 const hide_gui = () => {
+    console.log(subcategory);
     document.querySelector('#output').style.visibility = 'hidden';
     document.querySelector('#sidebar').style.visibility = 'hidden';
     document.querySelector('#legend').classList.add('print-legend');
@@ -336,8 +343,12 @@ const hide_gui = () => {
     document.querySelector('#no-cursor').style.visibility = 'visible';
     document.querySelector('.inputs-color').style.display = 'none';
     document.querySelector('.legend-title').style.display = 'none';
+    document.querySelector('.print-legend__title').style.display = 'block';
+    document.querySelector('.print-legend__title').innerHTML = subcategory
     document.querySelector('#sidebar').classList.remove('side-active');
     document.querySelector('#sidebar').classList.add('side-hidden')
+    document.querySelector('#languages').style.visibility = 'hidden'
+    clearTimeout(timeout)
     map.setOptions({ disableDefaultUI: true})
     show_alert("To exit click escape!", "info");
     setTimeout(() => {$(".alert").alert('close')}, 3000)
@@ -354,7 +365,10 @@ const show_gui = () => {
     document.querySelector('#hidden-gui').style.visibility = 'visible';
     document.querySelector('#no-cursor').style.visibility = 'hidden';
     document.querySelector('.inputs-color').style.display = 'block';
-    document.querySelector('.legend-title').style.display = 'block';
+    document.querySelector('.print-legend__title').style.display = 'none';
+    document.querySelector('.legend-title').innerHTML = 'legend';
+    document.querySelector('#languages').style.visibility = 'visible';
+    play_btn.disabled = false; value = 0;
     map.setOptions({ disableDefaultUI: false})
     hidden_gui_mode = false;
 }
@@ -550,6 +564,7 @@ document.querySelector("#next").addEventListener("click", () => {
 
 const range = document.querySelector('#years');
 const play_btn = document.querySelector('.play');
+let timeout;
 let value = 0;
 
 const simulation = () => {
@@ -575,7 +590,7 @@ const simulation = () => {
         return false;
     }
     value++;
-    setTimeout(simulation, 2500);
+    timeout = setTimeout(simulation, 2500);
 }
 
 play_btn.addEventListener('click', simulation);

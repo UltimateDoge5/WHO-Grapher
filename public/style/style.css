@@ -197,7 +197,7 @@ button{
     letter-spacing: 1px;
     font-weight: 700;
     color: #474747;
-    margin-top: 20px;
+    margin-top: 15px;
     text-transform: uppercase;
     text-align: center;
 }
@@ -237,12 +237,16 @@ select{
     position: absolute;
     visibility: visible;
     height: 40%;
-    width: 60% !important;
+    width: 75% !important;
     top: 60%;
-    right: -40%;
+    right: -55%;
     background-color: rgba(255, 255, 255, 0.9);
     border-top-right-radius: 20px;
-    font-size: 13pt !important;
+    font-size: 1rem !important;
+}
+
+.print-legend__title{
+    display: none;
 }
 
 .legend-list{
@@ -255,7 +259,7 @@ select{
     padding: 0px 10px;
     font-weight: 700;
     display: flex;
-    margin: 15px 0px;
+    margin: 10px 0px;
     display: flex !important;
     align-items: center !important;
 }
