@@ -574,7 +574,7 @@ document.querySelector("#next").addEventListener("click", () => {
 const range = document.querySelector('#years');
 const play_btn = document.querySelector('.play');
 let value = 0;
-let timeOut;
+let timeout;
 const simulation = () => {
     destroyPoligons();
     let min_max = [range.min, range.max];
