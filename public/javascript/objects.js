@@ -220,7 +220,7 @@ const countriesObject = { // country list
     "Uganda": "UGA",
     "Ukraine": "UKR",
     "United Arab Emirates": "ARE",
-    "United Kingdom": "GBR",
+    "UK": "GBR",
     "USA": "USA",
     "Uruguay": "URY",
     "Uzbekistan": "UZB",
@@ -254,9 +254,9 @@ const categories = {
             nameEN: "Number of malaria cases",
             namePL: "Liczba przypadków malarii"
         }, {
-            code: "HIV_0000000026",
-            name: "Number of new HIV infections",
-            namePL: "Liczba nowych zakażeń wirusem HIV"
+            code: "TB_e_inc_num",
+            name: "Number of incident tuberculosis cases",
+            namePL: "Liczba przypadków gruźlicy"
         }]
 
     },
@@ -277,61 +277,75 @@ const categories = {
 }
 
 const toasts = [{
-        'text': 'Click on any country to select it!',
+        'textEN': 'Click on any country to select it!',
+        'textPL': 'Kliknij na jakikolwiek kraj by go wybrać!',
         'position': '6 / 6 / 7 / 8'
     },
     {
-        'text': 'By clicking reset button you reset everything you selected!',
+        'textEN': 'By clicking reset button you reset everything you selected!',
+        'textPL': 'Klikając przycisk reset resetujesz kraj który już wybrałeś!',
         'position': '3 / 6 / 4 / 9'
     },
     {
-        'text': 'After you chose a country, select a category and subcategory that you would like to view!',
+        'textEN': 'After you chose a country, select a category and subcategory that you would like to view!',
+        'textPL': 'Po wybraniu kraju, wybierz kategorie oraz podkategorie którą chciał byś wyświetlić!',
         'position': '3 / 4 / 4 / 6'
     },
     {
-        'text': 'Click the "view" button!',
+        'textEN': 'Click the "View" button!',
+        'textPL': 'Kliknij przycisk "Wyświetl"!',
         'position': '4 / 4 / 5 / 6'
     },
     {
-        'text': 'You can alse change the chart type!',
+        'textEN': 'You can alse change the chart type!',
+        'textPL': 'Możesz zmienić typ wykresu!',
         'position': '5 / 10 / 6 / 12'
     },
     {
-        'text': 'In top right corner you can display the graph on fullscreen!',
-        'position': '2 / 9 / 3 / 11'
+        'textEN': 'You can display the graph on fullscreen!',
+        'textPL': 'Możesz wyświetlić wykres w trybie pełnoekranowym!',
+        'position': '2 / 8 / 3 / 10'
     },
     {
-        'text': 'We have diffrent modes too!',
+        'textEN': 'We have diffrent modes too - multi mode and global mode!',
+        'textPL': 'Mamy też kilka innych trybów - tryb wielu oraz tryb globalny!',
         'position': '3 / 10 / 3 / 12'
     },
     {
-        'text': 'Afrer changing to multi mode now you can compare multiple countries! Add country to country list!',
+        'textEN': 'In multi mode you can compare multiple countries! Click a country then click "Add" button to add the country to the list!',
+        'textPL': 'W trybie wielu możesz porównywać klika krajów za jednym razem! Wybierz kraj klikając go, a następnie kliknij przycisk dodaj by dodać go do listy krajów!',
         'position': '3 / 6 / 4 / 9'
     },
     {
-        'text': 'We prepared an example country list for you!',
+        'textEN': 'We prepared an example country list for you! You can remove any country on the list by clickin "x" button next to it!',
+        'textPL': 'Przygotowaliśmy dla ciebie przykładową liste krajów! Możeż usunąc dany kraj z listy klikając "x" znajdujący się obok nazwy kraju!',
         'position': '7 / 4 / 8 / 6'
     },
     {
-        'text': 'In global mode you can display values on a map! We provided the option to hide the gui! So you can use it like a normal map!',
+        'textEN': 'In global mode you can display the data on a map! We provided the option to hide the gui (crossed eye)! So you can use it just like a normal map! Also you can see the exact value by hovering over desired country!',
+        'textPL': 'W trybie globalnym możesz wyświtlać dane na mapie!',
         'position': '3 / 8 / 4 / 10'
     },
     {
-        'text': 'You can change the colors of the legend!',
+        'textEN': 'You can change the colors of the legend!',
+        'textPL': 'Możesz dowolnie zmieniać kolory legendy!',
         'position': '8 / 4 / 9 / 6'
     },
     {
-        'text': 'You can change the years using the slider below!',
+        'textEN': 'You can change the years using the slider below!',
+        'textPL': 'Możesz zmienić rok wyświetlanych danych używając suwaka na dole!',
         'position': '9 / 9 / 10 / 11'
     },
     {
-        'text': 'By clicking the play button you can play little animation how values changed over the years!',
+        'textEN': 'By clicking the play button you can play a little animation how values changed over the years!',
+        'textPL': 'Klikajać przycisk odtwórz możesz uruchmić małą animacje jak zmieniały się wartości poprzez lata!',
         'position': '9 / 6 / 10 / 8'
     },
 ]
 
 const languageText = {
     EN: {
+        firstVisit: "You are visiting our site for first time from this device, so we highlited the tutorial button for the quick access!",
         globalMode: "All countries",
         countryOnList: "This country is already on the list",
         countryIsNull: "Cannot add nothing to country list",
@@ -346,6 +360,7 @@ const languageText = {
         dataZeroMulti: [
             "Data for countries: ", " is equal to zero and won't be displayed"
         ],
+        modalText: ["Country", "Category", "Subcategory", "Unit"],
         difference: {
             increased: function(value1, value2, country, subcategory, percent) {
                 return `<p>For ${country}, between years <b>${value1}</b> and <b>${value2}</b> ${subcategory} increased by <b>${percent}</b>%</p>`;
@@ -356,6 +371,7 @@ const languageText = {
         }
     },
     PL: {
+        firstVisit: "Odwiedzasz naszą stronę po raz pierwszy z tego urządzenia, więc podświetliliśmy przcisk samouczka abyś mógł szybko zacząć kożystać z wszystkich możliwosci aplikcaji!",
         globalMode: "Wszystkie kraje",
         countryOnList: "Ten kraj już się znajduje na liście",
         countryIsNull: "Nie można dodać niczego do listy",
@@ -370,6 +386,7 @@ const languageText = {
         dataZeroMulti: [
             "Dane dla krajów: ", " są równe zeru i nie zostaną wyświetlone"
         ],
+        modalText: ["Kraj", "Kategoria", "Podkategoria", "Jednostka"],
         difference: {
             increased: function(value1, value2, country, subcategory, percent) {
                 return `<p>Dla ${country}, w latach <b>${value1}</b> a <b>${value2}</b> ${subcategory} wzrosło o <b>${percent}</b>%</p>`;

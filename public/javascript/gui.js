@@ -49,8 +49,17 @@ const show_alert = (alert, type) => {
     document.querySelector("#alerts").innerHTML = alert_html(alert, type);
 }
 
-// CATEGORY & SUBCATEGORIES
+const first_visit_info = () => { // when user first visit
+    if (!localStorage.getItem('show_tutorial')) {
+        show_alert(languageText[lang].firstVisit, 'info')
+        document.querySelector('#tutorial').classList.add('pulse')
+        localStorage.setItem('show_tutorial', true)
+    }
+}
 
+first_visit_info();
+
+// CATEGORY & SUBCATEGORIES
 let category_select = document.querySelector("#category");
 
 // create options in category select
@@ -77,19 +86,18 @@ function prepare_subcategories_options() {
 
     for (let subcategory of subcategories) {
         if (subcategory.displayName) {
-            subcategory_select.innerHTML += `<option value="${subcategory.name}">${subcategory.displayName}</option>`;
+            subcategory_select.innerHTML += `<option value="${subcategory[`name${lang}`]}">${subcategory.displayName}</option>`;
         } else {
-            subcategory_select.innerHTML += `<option value="${subcategory.name}">${subcategory[`name${lang}`]}</option>`;
+            subcategory_select.innerHTML += `<option value="${subcategory[`name${lang}`]}">${subcategory[`name${lang}`]}</option>`;
         }
     }
 }
 
 function choose_subcategory() {
-    subcategory = this.value || categories[category]["subcategories"][0]["name"]
+    subcategory = this.value || categories[category]["subcategories"][0][`name${lang}`];
 }
 
 // MODES
-
 const items_mode = document.querySelectorAll(".mode");
 
 function change_mode() {
@@ -139,16 +147,17 @@ const legend_color_list = gradient => {
     const legend_list = document.querySelector('.legend-list');
     legend_list.innerHTML = "";
 
-    for (let i = 0; i < gradient.length; i++) {
+    for (let i = gradient.length - 1; i >= 0; i--) {
         legend_list.innerHTML += `<li class='legend-list__item'><div class="color" style='background-color: ${gradient[i]}'></div><div class='compartments'></div></li>`;
     }
-
+    gradient.splice(0, 1);
     return gradient
 }
 
 const legends_colors = () => {
     const colors = [document.querySelector('#color1').value, document.querySelector('#color2').value];
-    const gradient = generateGradient(colors[1], colors[0], 5);
+    let gradient = generateGradient(colors[1], colors[0], 5);
+    gradient.unshift('#5e5e5e');
 
     return gradient
 }
@@ -173,9 +182,15 @@ const years_list = (years) => {
     const years_list = document.querySelector('#years__list');
     years_list.innerHTML = "";
     const years_range = document.querySelector('#years');
-    const output = document.querySelector('#output');
+    const output_item = document.querySelector('#output');
     years_range.min = 0; years_range.max = years.length - 1; years_range.step = 1; years_range.value = years.length - 1;
-    output.innerHTML = active_years[years_range.value]; output.style.visibility = 'visible'; 
+    if(years.length > 1){
+        output_item.innerHTML = active_years[years_range.value]; output_item.style.visibility = 'visible';
+        output();
+    }
+    else{
+        output_item.style.visibility = 'hidden';
+    }
 
     for(let i = 0; i <  years.length; i++){
         if(years.length > 20){
@@ -191,9 +206,12 @@ const years_list = (years) => {
 const legend_compartments = (legend) => {
     const compartments_list = document.querySelectorAll('.compartments');
 
-    for(let i = 0; i < legend.length; i++){
-        compartments_list[i].innerHTML = `${legend[i].compartment['from'].toFixed(1)} - ${legend[i].compartment['to'].toFixed(1)}`
+    let index = 0;
+    for(let i = legend.length-1; i >=  0; i--){
+        compartments_list[i].innerHTML = `${legend[index].compartment['from'].toFixed(1)} - ${legend[index].compartment['to'].toFixed(1)}`
+        index++;
     }
+    compartments_list[compartments_list.length-1].innerHTML = languageText[lang].noDataPolygon;
 }
 
 
@@ -238,14 +256,15 @@ function delete_country() {
 // MODAL
 
 const update_modal_header = (unit) => {
+    const categoryDisplay = categories[category][`name${lang}`];
     const modal_title = document.querySelector(".modal-title");
+    document.querySelector('#chart_type').selectedIndex = 0;
     if (mode == "multi") {
         let country_list = countries.join(", ");
-        modal_title.innerHTML = `<b>Country:</b> ${country_list}, <b>Category:</b> ${category}, <b>Subcategory:</b> ${subcategory} ${unit ? `, <b>Unit:</b> ` + unit : ``}`;
+        modal_title.innerHTML = `<b>${languageText[lang].modalText[0]}:</b> ${country_list}, <b>${languageText[lang].modalText[1]}:</b> ${categoryDisplay}, <b>${languageText[lang].modalText[2]}:</b> ${subcategory} ${unit ? `, <b>${languageText[lang].modalText[3]}:</b> ` + unit : ``}`;
         return false;
     }
-    modal_title.innerHTML = `<b>Country:</b> ${country}, <b>Category:</b> ${category}, <b>Subcategory:</b> ${subcategory} ${unit ? `, <b>Unit:</b> ` + unit : ``}`;
-    document.querySelector('#chart_type').selectedIndex = 0;
+    modal_title.innerHTML = `<b>${languageText[lang].modalText[0]}:</b> ${country}, <b>${languageText[lang].modalText[1]}:</b> ${categoryDisplay}, <b>${languageText[lang].modalText[2]}:</b> ${subcategory} ${unit ? `, <b>${languageText[lang].modalText[3]}:</b> ` + unit : ``}`;
 }
 
 const btn_fullscreen = document.querySelector(".fullscreen");
@@ -261,7 +280,7 @@ btn_fullscreen.addEventListener("click", () => {
 // search code for api url
 const search_code = (category, subcategory) => {
     for (let sub of categories[category]["subcategories"]) {
-        if (sub.name === subcategory) {
+        if (sub.nameEN === subcategory || sub.namePL === subcategory) {
             return sub
         }
     }
@@ -302,10 +321,8 @@ document.querySelector("#search").addEventListener("click", () => {
 
     if (mode == "single") {
         fetchSingleCountry(active_sub_code.code)
-        $('#chart_modal').modal('show')
     } else if (mode == "multi") {
         fetchMultipleCountries(active_sub_code.code)
-        $('#chart_modal').modal('show')
     } else if (mode == "global") {
         warning_global()
         
@@ -336,8 +353,11 @@ const hide_gui = () => {
     document.querySelector('#no-cursor').style.visibility = 'visible';
     document.querySelector('.inputs-color').style.display = 'none';
     document.querySelector('.legend-title').style.display = 'none';
+    document.querySelector('.print-legend__title').style.display = 'block';
+    document.querySelector('.print-legend__title').innerHTML = subcategory;
     document.querySelector('#sidebar').classList.remove('side-active');
     document.querySelector('#sidebar').classList.add('side-hidden')
+    clearTimeout(timeout)
     map.setOptions({ disableDefaultUI: true})
     show_alert("To exit click escape!", "info");
     setTimeout(() => {$(".alert").alert('close')}, 3000)
@@ -345,6 +365,7 @@ const hide_gui = () => {
 }
 
 const show_gui = () => {
+    document.querySelector('.print-legend__title').style.display = 'none';
     document.querySelector('#output').style.visibility = 'visible';
     document.querySelector('#sidebar').style.visibility = 'visible';
     document.querySelector('#legend').classList.remove('print-legend');
@@ -523,7 +544,9 @@ const render_toast = () => {
             sample_country_list(2);
             break;
         case 9:
-            global_mode();
+            document.querySelector('#years-range').style.display = 'block';
+            document.querySelector('#global_alert').style.visibility = 'hidden';
+            document.querySelector('#sidebar').style.zIndex = '1';
             document.querySelector('.main-nav').style.zIndex = max_z_index;
             break;
         case 10:
@@ -551,8 +574,9 @@ document.querySelector("#next").addEventListener("click", () => {
 const range = document.querySelector('#years');
 const play_btn = document.querySelector('.play');
 let value = 0;
-
+let timeOut;
 const simulation = () => {
+    destroyPoligons();
     let min_max = [range.min, range.max];
 
     document.querySelector('#sidebar').classList.remove('side-active');
@@ -575,7 +599,6 @@ const simulation = () => {
         return false;
     }
     value++;
-    setTimeout(simulation, 2500);
+    timeout = setTimeout(simulation, 2500);
 }
-
 play_btn.addEventListener('click', simulation);

@@ -59,7 +59,7 @@ app.get("/api/:codes", (req, res) => { //Connecting to api from the server becau
     });
 })
 
-app.get("/getBorders", (req, res) => {
+app.get("/get/borders", (req, res) => {
     const borderJson = JSON.parse(fs.readFileSync(path.join(__dirname, "/borders.json"), 'UTF-8'));
     res.json(borderJson);
 });

@@ -48,7 +48,18 @@ function createChart(data = null, type = "bar", years, title = "", country) { //
 }
 
 function createMultiChart(datasets, type = "bar", years, title = "") { //Create chart with multiple countries
-    let emptyCountries = [];
+    console.log(datasets)
+    let finalOutput = [];
+    let rejected = [];
+    for (i = 0; i < datasets.length; i++) {
+        if (datasets[i].backgroundColor != undefined) {
+            finalOutput.push(datasets[i])
+        } else {
+            rejected.push(datasets[i])
+        }
+    }
+
+    /*let emptyCountries = [];
     let i = 0;
     for (country of datasets) {
         let sum = 0.0;
@@ -57,19 +68,27 @@ function createMultiChart(datasets, type = "bar", years, title = "") { //Create 
         }
         if (sum == 0) {
             emptyCountries.push(country.label)
+
             datasets.splice(i, 1)
         }
         i++;
     }
+    for (country of datasets) {
+        if (country.background == undefined) {
+            datasets.splice(i, 1)
+        }
+    }
+
     if (emptyCountries.length > 0) {
         let string = languageText[lang].dataZeroMulti[0];
         let countriesBuffer = "";
         for (country of emptyCountries) {
-            if (countriesBuffer != "") {
+            if (countriesBuffer.length > 0) {
                 string += ", ";
             }
-            string += country;
+            countriesBuffer += country
         }
+        string += countriesBuffer;
         string += languageText[lang].dataZeroMulti[1];
         show_alert(string, "warning");
     }
@@ -78,12 +97,25 @@ function createMultiChart(datasets, type = "bar", years, title = "") { //Create 
         return false;
     }
 
-
+    */
+    if (rejected.length > 0) {
+        let string = languageText[lang].dataZeroMulti[0];
+        let wasAdded = false;
+        for (country of rejected) {
+            if (wasAdded) {
+                string += ", ";
+            }
+            wasAdded = true;
+            string += country.label;
+        }
+        string += languageText[lang].dataZeroMulti[1];
+        show_alert(string, "warning");
+    }
     chart = new Chart(canvas, {
         type: type,
         data: {
             labels: years,
-            datasets: datasets,
+            datasets: finalOutput,
         },
         options: {
             responsive: true,
@@ -209,14 +241,10 @@ function getMultipleYears(data) {
     return years;
 }
 
-function getYearsForGlobal(data) {
+function getYearsForGlobal(parsedData) {
     let years = [];
-    for (country in data) {
-        for (object of data.fact) {
-            if (!years.includes(object.dim.YEAR)) {
-                years.push(object.dim.YEAR);
-            }
-        }
+    for (year in parsedData) {
+        years.push(year);
     }
     return years;
 }
@@ -267,7 +295,7 @@ function renderChart(data, country) {
             show_alert(languageText[lang].noData, "info")
             return false;
         }
-        createChart(dataset, "bar", years, data.fact[0].dim.GHO, country);
+        createChart(dataset, "bar", years, subcategory, country);
     } else { //If chart does exist destroy it and then create it
         chart.destroy();
         chart = undefined;
@@ -286,17 +314,12 @@ function renderMultiChart(data, countries) {
         show_alert(languageText[lang].fetchError, 'warning');
         return false;
     }
-    /*for (country in data) {
-        if (data[country].fact.length == 0) {
-            console.error("no data ", country)
-
-        }
-    }*/
 
     if (chart == undefined) { //If chart does exist destroy it and then create it
         const years = getMultipleYears(data);
         const dataset = getDatasets(data, countries);
-        createMultiChart(dataset, "bar", years);
+        console.log(dataset)
+        createMultiChart(dataset, "bar", years, subcategory);
     } else { //If chart does exist destroy it and then create it
         chart.destroy();
         chart = undefined;
@@ -315,12 +338,13 @@ function fetchGlobal(dataCode) {
 function renderGlobalMode(data) {
     getBorders().then(result => { //Wait for borders to load (if not cashed in borwser will be fetched from server)
             borders = result;
-            let minMax = getMinMax(data)
-            let years = getYearsForGlobal(data);
+            parsedData = getGlobalData(data);
+            let minMax = getMinMax(parsedData)
+            let years = getYearsForGlobal(parsedData);
             years_list(years); // generate caption for years range
-            parsedData = (getGlobalData(data, years), minMax);
             legend = assignToLegend(generateCompartment(minMax, 5), getGlobalData(data, years), legend_color_list(legends_colors())); //Create the legend
             legend_compartments(legend)
+            console.log(minMax, parsedData, data, generateCompartment(minMax, 5), legend)
             blacklist = checkBorders(legend, borders); //Create blacklist for countries of which borders we don't have
             let keys = Object.keys(legend[0].countries);
             drawBorders(legend, borders, blacklist, keys[keys.length - 1], { enabled: true, color: "#5e5e5e" });
@@ -332,7 +356,7 @@ function getBorders() { //Get countries borders
     return new Promise(async function(resolve, reject) {
         let borders = JSON.parse(localStorage.getItem("borders"));
         if (borders == null) {
-            getData(`/getBorders`) //Fetch only one country for single-country chart
+            getData(`/get/borders`) //Fetch only one country for single-country chart
                 .then(response => {
                     localStorage.setItem("borders", JSON.stringify(response));
                     resolve(response);
@@ -436,28 +460,30 @@ function generateCompartment(minMax, denominator = 5) {
     }
     let compartment = [];
     let base = (minMax.max + 1) - (minMax.min + 1);
-    let nominator = base / denominator;
+    let nominator = parseFloat((base / denominator).toFixed(1));
     let min = minMax.min;
     let max = nominator;
 
     for (let i = 0; i < denominator; i++) {
-        compartment.push({ from: min, to: max })
-        min = max + 1;
+        compartment.push({ from: parseFloat(min.toFixed(1)), to: parseFloat(max.toFixed(1)) })
+        min = max + 0.1;
         max += nominator;
     }
     return compartment;
 }
 
-function getMinMax(data) {
-    let min = parseFloat(data.fact[0].Value);
-    let max = parseFloat(data.fact[0].Value);
-
-    for (object of data.fact) {
-        if (isNaN(parseFloat(object.Value))) {
-            continue;
+function getMinMax(parsedData) {
+    let keys = Object.keys(parsedData);
+    let min = parseFloat(parsedData[keys[0]][0].value);
+    let max = parseFloat(parsedData[keys[0]][0].value);
+    for (year in parsedData) {
+        for (object of parsedData[year]) {
+            if (isNaN(parseFloat(object.value))) {
+                continue;
+            }
+            min = Math.min(min, parseFloat(object.value));
+            max = Math.max(max, parseFloat(object.value));
         }
-        min = Math.min(min, parseFloat(object.Value));
-        max = Math.max(max, parseFloat(object.Value));
     }
     return { min: min, max: max };
 }

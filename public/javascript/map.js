@@ -10,6 +10,7 @@ let countries = [];
 let isoCodes = []
 let polygons = {};
 let noDataCountries = {}
+let scale = 0;
 
 function initMap() {
     map = new google.maps.Map(document.getElementById("map"), {
@@ -80,6 +81,7 @@ function initMap() {
             })
             .catch(error => show_alert(error, "danger"))
     });
+    resetView()
 }
 
 function checkBorders(legend, borders) {
@@ -162,7 +164,7 @@ function destroyPoligons() {
     }
     for (country in noDataCountries) {
         for (polygon of noDataCountries[country]) {
-            polygon.setMap(map);
+            polygon.setMap(null);
         }
     }
     noDataCountries = {};
@@ -188,7 +190,7 @@ function drawPolygon(path, color, object, year) {
         var latLng = e.latLng;
         infoWindow.setPosition(latLng);
         infoWindow.open(map);
-        if (this.data.value == "No data") {
+        if (this.data.value == "No data" || this.data.value == "Brak danych") {
             for (polygon of noDataCountries[this.data.name]) {
                 polygon.setOptions({ fillColor: "#00FF00", fillOpacity: 0.6 })
             }
@@ -199,7 +201,7 @@ function drawPolygon(path, color, object, year) {
         }
     });
     google.maps.event.addListener(polygon, "mouseout", function() {
-        if (this.data.value == "No data") {
+        if (this.data.value == "No data" || this.data.value == "Brak danych") {
             for (polygon of noDataCountries[this.data.name]) {
                 polygon.setOptions({ fillColor: color, fillOpacity: 0.8 })
             }
