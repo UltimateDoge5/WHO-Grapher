@@ -1,13 +1,14 @@
 /* ANIMATIONS */
 
 @keyframes SlideUp {
-    from{
+    from {
         top: 100%;
     }
-    to{
-        top: 90%;
+    to {
+        top: 85%;
     }
 }
+
 
 /* BODY */
 
@@ -17,56 +18,77 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Lato', sans-serif;
+    /* background-color: lime; */
 }
+
 
 /* ALL BUTTON  */
 
-button{
+button {
     background: transparent !important;
     border: none !important;
     outline: none !important;
 }
 
+
 /* GOOGLE MAP */
 
 #map {
     height: 100%;
-    cursor: pointer;
 }
+
+#no-cursor {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 3000;
+    visibility: hidden;
+    cursor: none;
+}
+
 
 /* NAV */
 
-nav {
-    width: 40%;
+.main-nav {
+    width: 50%;
     height: 50px;
     font-size: 16pt;
     margin: 10px auto;
     background-color: rgba(255, 255, 255, 0.9);
-    position: absolute;
     top: 10px;
-    left: 30%;
+    left: 20%;
     z-index: 1;
     border-radius: 20px;
     display: flex !important;
     justify-content: space-around;
     align-items: center;
+    position: fixed;
 }
 
-#reset {
+#reset,
+#add,
+#hidden-gui {
     color: rgb(66, 117, 244);
     cursor: pointer;
     font-weight: 700;
+    margin: 0px 5px;
+    position: relative;
 }
 
-.mode{
-    width: 15%;
+#add,
+#hidden-gui {
+    visibility: hidden;
+}
+
+.mode-nav {
+    width: 20%;
     height: 50px;
     font-size: 16pt;
     margin: 10px auto;
     background-color: rgba(255, 255, 255, 0.9);
     position: absolute;
     top: 10px;
-    left: 80%;
+    left: 75%;
     z-index: 1;
     border-radius: 20px;
     display: flex !important;
@@ -74,9 +96,22 @@ nav {
     align-items: center;
 }
 
-#single, #multi, #global {
+#single,
+#multi,
+#global,
+#tutorial {
     color: rgb(66, 117, 244);
+    border-radius: 10px;
 }
+
+.active-mode {
+    background-color: rgb(66, 117, 244) !important;
+    color: white !important;
+    transition: .3s 0s ease-in;
+    transform: scale(1.05);
+    padding: 5px 10px;
+}
+
 
 /* SIDEBAR */
 
@@ -99,14 +134,51 @@ nav {
     transform: translateX(0%);
 }
 
-#categories {
+.options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 80%;
     height: 100%;
     box-shadow: 1px 1px 5px 2px rgb(66, 117, 244);
     background-color: rgba(255, 255, 255, 0.8);
+    overflow: auto;
+}
+
+#categories {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+#selected-countries {
+    width: 100%;
+    padding: 0px 40px;
+    display: none;
+}
+
+.selected-countries__list {
+    list-style-type: none;
+}
+
+.selected-countries__item {
+    padding: 0px 20px;
+    font-size: 14pt;
+    font-weight: 700;
+    display: flex;
+    margin: 10px 0px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between;
+}
+
+.remove {
+    color: rgb(56, 56, 56);
+    transition: .2s 0s ease-in;
+}
+
+.remove:hover {
+    color: #000;
 }
 
 #sidebar button {
@@ -128,15 +200,22 @@ nav {
     outline: none;
 }
 
-.categories-title{
+#reset {
+    cursor: pointer;
+}
+
+.categories-title,
+.countries-title,
+.legend-title {
     letter-spacing: 1px;
     font-weight: 700;
     color: #474747;
     margin-top: 20px;
     text-transform: uppercase;
+    text-align: center;
 }
 
-select{
+select {
     width: 80%;
     height: 40px;
     font-weight: 700;
@@ -145,10 +224,10 @@ select{
     outline: none;
     border-radius: 10px;
     margin: 20px 0px !important;
-    padding: 0px 10px;
+    padding: 0px 70px 0px 0px;
 }
 
-#search{
+#search {
     width: 50%;
     height: 40px;
     font-weight: 700;
@@ -159,32 +238,399 @@ select{
     color: rgb(66, 117, 244);
 }
 
+#legend {
+    width: 100%;
+    padding: 10px 20px;
+    display: none;
+    text-align: center;
+    font-size: 16pt;
+}
+
+.print-legend {
+    position: absolute;
+    visibility: visible;
+    height: 40%;
+    width: 60% !important;
+    top: 60%;
+    right: -40%;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-top-right-radius: 20px;
+    font-size: 1rem !important;
+}
+
+.print-legend__title {
+    display: none;
+}
+
+.legend-list {
+    list-style-type: none;
+    padding: 0px;
+    margin: 40px 10px;
+}
+
+.legend-list__item {
+    padding: 0px 10px;
+    font-weight: 700;
+    display: flex;
+    margin: 15px 0px;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.color {
+    width: 40px;
+    height: 20px;
+    border-radius: 5px;
+    margin: 0 10px;
+}
+
+.inputs-color {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    margin: 20px;
+}
+
+#color1,
+#color2 {
+    width: 30%;
+    height: 30px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+}
+
+.compartments {
+    margin-left: 20px;
+}
+
+
 /* ALERT */
 
-.alert{
+.alert {
     position: fixed !important;
-    top: 90%;
-    z-index: 10000;
-    animation: SlideUp .5s cubic-bezier(.46,.08,.39,.99);
+    word-break: break-word;
+    top: 85%;
+    z-index: 2000;
+    animation: SlideUp .5s cubic-bezier(.46, .08, .39, .99);
 }
+
+#global_alert {
+    position: absolute;
+    width: 40%;
+    left: 50%;
+    top: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    border-radius: 20px;
+    visibility: hidden;
+}
+
+.alert_btns {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.alert_btn {
+    margin: 0px 5px;
+    text-transform: uppercase;
+    font-size: 12pt;
+}
+
 
 /* CHART */
 
-#chart{
+#chart {
     height: 100% !important;
 }
 
+
 /* MODAL  */
 
-.modal-dialog{
+.modal-dialog {
     max-width: 1300px !important;
+    transition: .5s 0s ease-in-out;
 }
 
-.modal-content{
-    min-height: 650px;
-    
+.modal-content {
+    height: 650px;
+    transition: .5s 0s ease-in-out;
 }
 
-.modal-body{
+.modal-body {
     display: flex;
+}
+
+.settings {
+    display: flex;
+    flex-direction: column;
+}
+
+.difference {
+    position: absolute;
+    height: 80%;
+    width: 95%;
+    font-size: 14pt;
+    overflow-y: auto;
+}
+
+
+/* FULLSCREEN MODAL */
+
+.fullscreen {
+    font-size: 1.1rem;
+    color: #707070;
+}
+
+.fullscreen:hover {
+    color: #000;
+}
+
+.modal-dialog__fullscreen {
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+}
+
+.modal-content__fullscreen {
+    height: auto !important;
+    min-height: 100% !important;
+}
+
+
+/* TOASTS FOR TUTORIAL MODE */
+
+.container_toasts {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    z-index: 3000;
+    visibility: hidden;
+    background-color: rgba(56, 56, 56, .6);
+    display: none;
+    transition: .4s 0s ease-in;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(11, 1fr);
+}
+
+.exit {
+    font-size: 20pt;
+    color: rgb(56, 56, 56);
+    position: absolute;
+    left: 96%;
+    top: 2%;
+    transition: .2s 0s ease-in;
+}
+
+.exit:hover {
+    color: rgb(0, 0, 0);
+}
+
+.toast {
+    padding: 0px 0px !important;
+    justify-self: stretch;
+    align-self: stretch;
+    grid-area: 6 / 6 / 7 / 8;
+    padding: 0px 0px !important;
+}
+
+.toast-header {
+    height: 40%;
+    display: flex;
+    align-items: center;
+}
+
+.toast-body {
+    height: 60%;
+    display: flex;
+    align-items: center;
+}
+
+#next {
+    color: rgb(66, 117, 244);
+    font-size: 12pt;
+    font-weight: 700;
+}
+
+.end_tutorial {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    letter-spacing: 1px;
+    font-weight: 700;
+    color: #dfd8d8;
+    text-transform: uppercase;
+    font-size: 20pt;
+    visibility: hidden;
+    transition: .3s 0s ease-in;
+}
+
+
+/* GLOBAL MODE */
+
+#years-range {
+    position: fixed !important;
+    width: 60%;
+    top: 100%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translateX(-50%);
+    border-radius: 20px;
+    z-index: 2000;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    animation: SlideUp .5s 0s both cubic-bezier(.46, .08, .39, .99);
+    text-align: center;
+    display: none;
+}
+
+.play {
+    color: rgb(66, 117, 244);
+    font-size: 14pt;
+    cursor: pointer;
+}
+
+#years__list {
+    display: flex !important;
+    justify-content: space-between;
+}
+
+#output {
+    background: rgb(66, 117, 244);
+    color: white;
+    padding: 4px 12px;
+    position: absolute;
+    border-radius: 10px;
+    transform: translateY(-200%);
+    left: 95%;
+    visibility: hidden;
+}
+
+
+/* LANGUAGES */
+
+#languages {
+    position: fixed;
+    z-index: 2;
+    bottom: 10px;
+    right: 40px;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pl,
+.en {
+    width: 30px;
+    height: 15px;
+    margin: 0 5px;
+    border-radius: 5px;
+}
+
+.pl {
+    background-image: url('../svg/pl.svg');
+}
+
+.en {
+    background-image: url('../svg/en.svg');
+}
+
+
+/* MEDIA QUERY */
+
+@media(max-width: 992px) {
+    .main-nav {
+        width: 60%;
+        left: 5%;
+        font-size: 14pt;
+    }
+    .mode-nav {
+        width: 25%;
+        left: 70%;
+        font-size: 14pt;
+        padding: 10px;
+    }
+    #sidebar {
+        width: 50%;
+    }
+    #years-range {
+        width: 80%;
+    }
+    .caption-mode {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-nav {
+        width: 70%;
+        left: 0%;
+        font-size: 12pt;
+    }
+    .mode-nav {
+        width: 25%;
+        left: 75%;
+        font-size: 12pt;
+        padding: 10px;
+    }
+    #sidebar {
+        width: 70%;
+    }
+    #years-range {
+        width: 80%;
+    }
+}
+
+@media (max-width: 576px) {
+    .main-nav {
+        width: 90%;
+        left: 5%;
+    }
+    .mode-nav {
+        transform: rotate(90deg);
+        left: 80%;
+        top: 20%;
+        width: 25%;
+    }
+    #single,
+    #multi,
+    #global {
+        transform: rotate(-90deg);
+    }
+    #tutorial {
+        display: none;
+    }
+    #years-range {
+        width: 90%;
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(.75);
+        box-shadow: 0px 0px 0px 0px rgb(66, 117, 244);
+    }
+    50% {
+        transform: scale(1.25);
+        box-shadow: 0px 0px 15px 0px rgb(255, 255, 255);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0px 0px 0px 0px rgb(66, 117, 244);
+    }
+}
+
+.pulse {
+    animation: pulse 2s 0s 3 alternate both ease-out;
 }
